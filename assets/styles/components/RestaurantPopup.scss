@@ -1,0 +1,45 @@
+.popup {
+    min-width: 180px;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__title {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    &__flag {
+        width: 24px;
+        height: 16px;
+        margin-left: 8px;
+        object-fit: contain;
+        border: 1px solid #ccc;
+    }
+
+    &__address {
+        margin-top: 4px;
+        font-size: 0.9rem;
+        color: #444;
+
+        &-link {
+            margin-top: 1rem;
+            text-decoration: none;
+            color: inherit;
+            font-weight: 600;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &__country {
+        margin-top: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+}

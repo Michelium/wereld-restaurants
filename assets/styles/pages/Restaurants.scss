@@ -1,0 +1,15 @@
+.restaurants-map-wrapper {
+    position: relative;
+
+    &__filters {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1000; // higher than Leaflet's tiles
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        width: 350px;
+    }
+}
