@@ -1,61 +1,46 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Select from 'react-select';
-import { CountryType } from '../types/CountryType';
-import { getCountryIconUrl } from '../utils/getCountryIcon';
+import Select, {MultiValue} from 'react-select';
+import {CountryType} from '../types/CountryType';
+import {getCountryIconUrl} from '../utils/getCountryIcon';
 import '../../../styles/components/RestaurantFilterPanel.scss';
-import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
+import {MapContext, MapStateRepository} from '../providers/MapContextProvider';
 
 const RestaurantFilterPanel = () => {
     const [countries, setCountries] = useState<CountryType[]>([]);
+    const {mapState, setMapState} = useContext(MapContext);
 
     useEffect(() => {
         fetch('/api/countries')
-            .then((res) => res.json())
+            .then(res => res.json())
             .then(setCountries)
-            .catch((err) => console.error('Failed to load countries', err));
+            .catch(err => console.error('Failed to load countries', err));
     }, []);
 
-    const {mapState, setMapState} = useContext(MapContext);
+    const handleSelectChange = (selected: MultiValue<CountryType> | null) => {
+        const mutableSelected = selected ? [...selected] : [];
 
-    const options = countries.map((country) => ({
-        value: country.code,
-        label: country.name,
-        icon: getCountryIconUrl(country.code),
-    }));
-
-    const selectedOptions = options.filter((opt) =>
-        mapState.filters.countries.some((c) => c.code === opt.value)
-    );
-
-    const handleSelectChange = (selected: any) => {
-        const selectedCountries: CountryType[] = selected ? selected.map((opt: any) => opt.country) : [];
-
-        setMapState(
-            MapStateRepository.updaters.setFilters({
-                ...mapState.filters,
-                countries: selectedCountries,
-            })
-        );
+        setMapState(MapStateRepository.updaters.setFilterCountries(mutableSelected)(mapState));
     };
 
     return (
         <div className="filters">
             <p className="filters__label">Filter op land</p>
-            <Select
+            <Select<CountryType, true>
                 isMulti
-                options={options}
-                value={selectedOptions}
+                options={countries}
+                getOptionLabel={(country) => country.name}
+                getOptionValue={(country) => country.code}
+                value={mapState.filters.countries}
                 onChange={handleSelectChange}
                 classNamePrefix="country-select"
                 placeholder="Selecteer landen..."
+                menuPortalTarget={document.body}
                 styles={{
-                    option: (base, state) => ({
+                    menuPortal: (base) => ({
                         ...base,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
+                        zIndex: 2000,
                     }),
-                    singleValue: (base) => ({
+                    option: (base) => ({
                         ...base,
                         display: 'flex',
                         alignItems: 'center',
@@ -68,14 +53,14 @@ const RestaurantFilterPanel = () => {
                         gap: '6px',
                     }),
                 }}
-                formatOptionLabel={({ label, icon }) => (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                formatOptionLabel={(country) => (
+                    <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                         <img
-                            src={icon}
-                            alt={label}
-                            style={{ width: 20, height: 14, border: '1px solid #ccc' }}
+                            src={getCountryIconUrl(country.code)}
+                            alt={country.name}
+                            style={{width: 20, height: 14, border: '1px solid #ccc'}}
                         />
-                        {label}
+                        {country.name}
                     </div>
                 )}
             />
