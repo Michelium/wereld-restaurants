@@ -11,6 +11,8 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+
+        {% include 'includes/_matomo.html.twig' %}
     </head>
     <body>
         {% block body %}{% endblock %}
