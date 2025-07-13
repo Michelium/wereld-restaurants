@@ -1,11 +1,10 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {RestaurantType} from "./types/RestaurantType";
-import RestaurantMap from "./components/RestaurantMap";
 import Restaurants from "./pages/Restaurants";
+import {MapContext, MapProvider, MapStateRepository} from "./providers/MapContextProvider";
 
-const App = () => {
-
-    const [restaurants, setRestaurants] = useState<RestaurantType[]>([]);
+const AppContent = () => {
+    const {mapState, setMapState} = useContext(MapContext);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -17,7 +16,7 @@ const App = () => {
                 return response.json();
             })
             .then((data: RestaurantType[]) => {
-                setRestaurants(data);
+                setMapState(MapStateRepository.updaters.setRestaurants(data)(mapState));
                 setLoading(false);
             })
             .catch((error) => {
@@ -31,7 +30,17 @@ const App = () => {
         return <div>Aan het laden...</div>;
     }
 
-    return <Restaurants allRestaurants={restaurants}/>
+    return (
+        <Restaurants/>
+    );
+}
+
+const App = () => {
+    return (
+        <MapProvider>
+            <AppContent/>
+        </MapProvider>
+    )
 };
 
 export default App;

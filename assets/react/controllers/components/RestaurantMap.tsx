@@ -1,16 +1,12 @@
-import React from 'react';
-import {MapContainer, Marker, Popup, TileLayer} from 'react-leaflet';
-import {RestaurantType} from '../types/RestaurantType';
+import React, {useContext} from 'react';
+import {MapContainer, Marker, TileLayer} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import MarkerClusterGroup from "react-leaflet-cluster";
 import {getCountryIcon} from "../utils/getCountryIcon";
-import RestaurantPopup from "./RestaurantPopup";
+import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
 
-interface RestaurantMapProps {
-    restaurants: RestaurantType[];
-}
-
-const RestaurantMap = ({restaurants}: RestaurantMapProps) => {
+const RestaurantMap = () => {
+    const {mapState, setMapState} = useContext(MapContext);
 
     return (
         <MapContainer
@@ -24,16 +20,17 @@ const RestaurantMap = ({restaurants}: RestaurantMapProps) => {
             />
 
             <MarkerClusterGroup chunkedLoading>
-                {restaurants.map((restaurant) => (
+                {mapState.restaurants.map((restaurant) => (
                     <Marker
+                        eventHandlers={{
+                            click: () => {
+                                setMapState(MapStateRepository.updaters.setActiveRestaurant(restaurant)(mapState));
+                            },
+                        }}
                         key={restaurant.id}
                         position={[restaurant.latitude, restaurant.longitude]}
                         icon={getCountryIcon(restaurant.country?.code ?? 'unknown')}
-                    >
-                        <Popup>
-                            <RestaurantPopup restaurant={restaurant}/>
-                        </Popup>
-                    </Marker>
+                    />
                 ))}
             </MarkerClusterGroup>
         </MapContainer>

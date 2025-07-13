@@ -1,23 +1,42 @@
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Select from 'react-select';
 import { CountryType } from '../types/CountryType';
 import { getCountryIconUrl } from '../utils/getCountryIcon';
-import '../../../styles/components/RestaurantFilters.scss';
+import '../../../styles/components/RestaurantFilterPanel.scss';
+import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
 
-interface RestaurantFiltersProps {
-    selected: string[];
-    onChange: (selected: string[]) => void;
-    countries: CountryType[];
-}
+const RestaurantFilterPanel = () => {
+    const [countries, setCountries] = useState<CountryType[]>([]);
 
-const RestaurantFilters = ({ selected, onChange, countries }: RestaurantFiltersProps) => {
+    useEffect(() => {
+        fetch('/api/countries')
+            .then((res) => res.json())
+            .then(setCountries)
+            .catch((err) => console.error('Failed to load countries', err));
+    }, []);
+
+    const {mapState, setMapState} = useContext(MapContext);
+
     const options = countries.map((country) => ({
         value: country.code,
         label: country.name,
         icon: getCountryIconUrl(country.code),
     }));
 
-    const selectedOptions = options.filter((opt) => selected.includes(opt.value));
+    const selectedOptions = options.filter((opt) =>
+        mapState.filters.countries.some((c) => c.code === opt.value)
+    );
+
+    const handleSelectChange = (selected: any) => {
+        const selectedCountries: CountryType[] = selected ? selected.map((opt: any) => opt.country) : [];
+
+        setMapState(
+            MapStateRepository.updaters.setFilters({
+                ...mapState.filters,
+                countries: selectedCountries,
+            })
+        );
+    };
 
     return (
         <div className="filters">
@@ -26,7 +45,7 @@ const RestaurantFilters = ({ selected, onChange, countries }: RestaurantFiltersP
                 isMulti
                 options={options}
                 value={selectedOptions}
-                onChange={(selected) => onChange(selected.map((opt) => opt.value))}
+                onChange={handleSelectChange}
                 classNamePrefix="country-select"
                 placeholder="Selecteer landen..."
                 styles={{
@@ -64,4 +83,4 @@ const RestaurantFilters = ({ selected, onChange, countries }: RestaurantFiltersP
     );
 };
 
-export default RestaurantFilters;
+export default RestaurantFilterPanel;
