@@ -19,9 +19,15 @@ class RestaurantController extends AbstractController {
     #[Route('', name: '_all', methods: ['GET'])]
     public function all(Request $request): JsonResponse {
         $countryCodes = $request->query->all('countries');
+        $bounds = $request->query->get('bounds');
 
-        if (!empty($countryCodes)) {
-            $restaurants = $this->restaurantRepository->findByCountries($countryCodes);
+        if ($bounds) {
+            $decoded = json_decode($bounds, true);
+            if (is_array($decoded)) {
+                $restaurants = $this->restaurantRepository->findWithinBounds($decoded, $countryCodes);
+            } else {
+                return $this->json(['error' => 'Invalid bounds'], 400);
+            }
         } else {
             $restaurants = $this->restaurantRepository->findAllWithCountry();
         }
