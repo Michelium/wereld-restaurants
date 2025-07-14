@@ -35,4 +35,24 @@ class RestaurantRepository extends ServiceEntityRepository {
             ->getResult();
     }
 
+    /* @return Restaurant[] */
+    public function findWithinBounds(array $bounds, array $countryCodes = []): array {
+        $qb = $this->createQueryBuilder('r')
+            ->where('r.country IS NOT NULL')
+            ->andWhere('r.latitude BETWEEN :south AND :north')
+            ->andWhere('r.longitude BETWEEN :west AND :east')
+            ->setParameter('south', $bounds['south'])
+            ->setParameter('north', $bounds['north'])
+            ->setParameter('west', $bounds['west'])
+            ->setParameter('east', $bounds['east']);
+
+        if (!empty($countryCodes)) {
+            $qb->innerJoin('r.country', 'c')
+                ->andWhere('c.code IN (:codes)')
+                ->setParameter('codes', $countryCodes);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

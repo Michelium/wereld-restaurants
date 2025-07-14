@@ -1,4 +1,4 @@
-.popup {
+.restaurant-info {
     min-width: 180px;
 
     &__header {
@@ -28,8 +28,8 @@
         &-link {
             margin-top: 1rem;
             text-decoration: none;
-            color: inherit;
             font-weight: 600;
+            color: #3388ff;
 
             &:hover {
                 text-decoration: underline;
@@ -41,5 +41,12 @@
         margin-top: 6px;
         font-size: 0.9rem;
         font-weight: 600;
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
     }
 }
