@@ -43,15 +43,10 @@
         font-weight: 600;
     }
 
-    &__close-button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: #333;
-
-        &:hover {
-            color: #ff0202;
-        }
+    &__actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
     }
 }

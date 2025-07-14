@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
 import {getCountryIconUrl} from "../utils/getCountryIcon";
 import '../../../styles/components/RestaurantInfoPanel.scss';
+import {Button} from "@mui/joy";
 
 const RestaurantInfoPanel = () => {
     const {mapState, setMapState} = useContext(MapContext);
@@ -48,11 +49,23 @@ const RestaurantInfoPanel = () => {
                 {restaurant.country?.name ?? 'Onbekend land'}
             </div>
 
-            <button
-                onClick={() => setMapState(MapStateRepository.updaters.clearActiveRestaurant()(mapState))}
-            >
-                Sluiten
-            </button>
+            <hr/>
+
+            <div className="restaurant-info__actions">
+                <Button
+                    size="sm"
+                    variant="solid"
+                    color="primary"
+                >
+                    Probleem melden
+                </Button>
+                <Button
+                    onClick={() => setMapState(MapStateRepository.updaters.clearActiveRestaurant()(mapState))}
+                    size="sm"
+                    variant="outlined"
+                    color="neutral"
+                >Sluiten</Button>
+            </div>
         </div>
     );
 };
