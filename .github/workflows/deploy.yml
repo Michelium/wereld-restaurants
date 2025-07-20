@@ -28,10 +28,9 @@ jobs:
                     tools: composer:v2
 
             -   name: Install Deployer
-                run: composer global require deployer/deployer
+                run: |
+                    composer global require deployer/deployer
+                    echo "$HOME/.composer/vendor/bin" >> $GITHUB_PATH
 
             -   name: Deploy
-                env:
-                    DEPLOYER_BIN: $HOME/.composer/vendor/bin/dep
-                run: |
-                    $DEPLOYER_BIN deploy ${{ github.ref_name }}
+                run: dep deploy ${{ github.ref_name }}
