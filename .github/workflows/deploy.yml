@@ -32,5 +32,10 @@ jobs:
                     composer global require deployer/deployer
                     echo "$HOME/.composer/vendor/bin" >> $GITHUB_PATH
 
+            -   name: Add SSH host key to known_hosts
+                run: |
+                    mkdir -p ~/.ssh
+                    ssh-keyscan da07.qabana.nl >> ~/.ssh/known_hosts
+
             -   name: Deploy
                 run: dep deploy ${{ github.ref_name }}
