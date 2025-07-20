@@ -9,8 +9,6 @@ export const loadManifest = async () => {
     }
 };
 
-loadManifest();
-
 /**
  * Resolves an asset path from the Webpack manifest or returns a direct path for user-uploaded files.
  * @param fileName The original filename (e.g., "images/flag.svg" or "uploads/filename.jpg")
