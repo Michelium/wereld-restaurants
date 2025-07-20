@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Trait\EntityLifecycleTrait;
 use App\Repository\RestaurantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -59,6 +61,17 @@ class Restaurant {
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
+
+    /**
+     * @var Collection<int, RestaurantSuggestion>
+     */
+    #[ORM\OneToMany(targetEntity: RestaurantSuggestion::class, mappedBy: 'restaurant')]
+    private Collection $restaurantSuggestions;
+
+    public function __construct()
+    {
+        $this->restaurantSuggestions = new ArrayCollection();
+    }
 
     public function getId(): ?int {
         return $this->id;
@@ -178,6 +191,36 @@ class Restaurant {
     public function setWebsite(?string $website): static
     {
         $this->website = $website;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RestaurantSuggestion>
+     */
+    public function getRestaurantSuggestions(): Collection
+    {
+        return $this->restaurantSuggestions;
+    }
+
+    public function addRestaurantSuggestion(RestaurantSuggestion $restaurantSuggestion): static
+    {
+        if (!$this->restaurantSuggestions->contains($restaurantSuggestion)) {
+            $this->restaurantSuggestions->add($restaurantSuggestion);
+            $restaurantSuggestion->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRestaurantSuggestion(RestaurantSuggestion $restaurantSuggestion): static
+    {
+        if ($this->restaurantSuggestions->removeElement($restaurantSuggestion)) {
+            // set the owning side to null (unless already changed)
+            if ($restaurantSuggestion->getRestaurant() === $this) {
+                $restaurantSuggestion->setRestaurant(null);
+            }
+        }
 
         return $this;
     }
