@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Select, {MultiValue} from 'react-select';
+import {MultiValue} from 'react-select';
 import {CountryType} from '../types/CountryType';
-import {getCountryIconUrl} from '../utils/getCountryIcon';
 import '../../../styles/components/RestaurantFilterPanel.scss';
 import {MapContext, MapStateRepository} from '../providers/MapContextProvider';
+import CountrySelect from "./CountrySelect";
 
 const RestaurantFilterPanel = () => {
     const [countries, setCountries] = useState<CountryType[]>([]);
@@ -25,44 +25,15 @@ const RestaurantFilterPanel = () => {
     return (
         <div className="filters">
             <p className="filters__label">Filter op land</p>
-            <Select<CountryType, true>
+            <CountrySelect
                 isMulti
-                options={countries}
-                getOptionLabel={(country) => country.name}
-                getOptionValue={(country) => country.code}
                 value={mapState.filters.countries}
-                onChange={handleSelectChange}
-                classNamePrefix="country-select"
+                onChange={(selected) =>
+                    setMapState(
+                        MapStateRepository.updaters.setFilterCountries(selected as CountryType[])(mapState)
+                    )
+                }
                 placeholder="Selecteer landen..."
-                menuPortalTarget={document.body}
-                styles={{
-                    menuPortal: (base) => ({
-                        ...base,
-                        zIndex: 2000,
-                    }),
-                    option: (base) => ({
-                        ...base,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                    }),
-                    multiValueLabel: (base) => ({
-                        ...base,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                    }),
-                }}
-                formatOptionLabel={(country) => (
-                    <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                        <img
-                            src={getCountryIconUrl(country.code)}
-                            alt={country.name}
-                            style={{width: 20, height: 14, border: '1px solid #ccc'}}
-                        />
-                        {country.name}
-                    </div>
-                )}
             />
         </div>
     );
