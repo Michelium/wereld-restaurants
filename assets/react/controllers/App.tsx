@@ -1,16 +1,20 @@
 import Restaurants from "./pages/Restaurants";
 import {MapProvider} from "./providers/MapContextProvider";
+import Header from "./components/Header";
 
 const AppContent = () => {
     return (
-        <Restaurants/>
+        <>
+            <Header/>
+            <Restaurants/>
+        </>
     );
 }
 
 const App = () => {
     return (
         <MapProvider>
-            <AppContent/>
+           <AppContent/>
         </MapProvider>
     )
 };
