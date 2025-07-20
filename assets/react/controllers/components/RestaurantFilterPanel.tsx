@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {MultiValue} from 'react-select';
 import {CountryType} from '../types/CountryType';
 import '../../../styles/components/RestaurantFilterPanel.scss';
 import {MapContext, MapStateRepository} from '../providers/MapContextProvider';
@@ -15,12 +14,6 @@ const RestaurantFilterPanel = () => {
             .then(setCountries)
             .catch(err => console.error('Failed to load countries', err));
     }, []);
-
-    const handleSelectChange = (selected: MultiValue<CountryType> | null) => {
-        const mutableSelected = selected ? [...selected] : [];
-
-        setMapState(MapStateRepository.updaters.setFilterCountries(mutableSelected)(mapState));
-    };
 
     return (
         <div className="filters">
