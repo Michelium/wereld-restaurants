@@ -1,6 +1,8 @@
 import Restaurants from "./pages/Restaurants";
 import {MapProvider} from "./providers/MapContextProvider";
 import Header from "./components/Header";
+import {useEffect, useState} from "react";
+import {loadManifest} from "./utils/assetsUtils";
 
 const AppContent = () => {
     return (
@@ -14,7 +16,7 @@ const AppContent = () => {
 const App = () => {
     return (
         <MapProvider>
-           <AppContent/>
+            <AppContent/>
         </MapProvider>
     )
 };

@@ -51,6 +51,15 @@ class Restaurant {
     #[Groups(['restaurant:read'])]
     private ?Country $country = null;
 
+    #[ORM\Column(length: 40, unique: true, nullable: true)]
+    private ?string $osmId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $osmCuisine = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $website = null;
+
     public function getId(): ?int {
         return $this->id;
     }
@@ -133,6 +142,42 @@ class Restaurant {
     public function setCountry(?Country $country): static
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    public function getOsmId(): ?string
+    {
+        return $this->osmId;
+    }
+
+    public function setOsmId(?string $osmId): static
+    {
+        $this->osmId = $osmId;
+
+        return $this;
+    }
+
+    public function getOsmCuisine(): ?string
+    {
+        return $this->osmCuisine;
+    }
+
+    public function setOsmCuisine(?string $osmCuisine): static
+    {
+        $this->osmCuisine = $osmCuisine;
+
+        return $this;
+    }
+
+    public function getWebsite(): ?string
+    {
+        return $this->website;
+    }
+
+    public function setWebsite(?string $website): static
+    {
+        $this->website = $website;
 
         return $this;
     }
