@@ -43,6 +43,7 @@ class RestaurantSuggestionController extends AbstractController {
         $suggestion = new RestaurantSuggestion();
         $suggestion->setRestaurant($restaurant);
         $suggestion->setStatus(RestaurantSuggestionStatus::PENDING);
+        $suggestion->setComment($dto->comment);
         $suggestion->setFields([
             'name' => $dto->fields->name,
             'street' => $dto->fields->street,

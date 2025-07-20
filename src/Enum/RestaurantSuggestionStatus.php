@@ -8,9 +8,8 @@ enum RestaurantSuggestionStatus: string {
     case APPROVED = 'approved';
     case REJECTED = 'rejected';
 
-    public function label(): string
-    {
-        return match($this) {
+    public function label(): string {
+        return match ($this) {
             self::PENDING => 'Wacht op goedkeuring',
             self::APPROVED => 'Goedgekeurd',
             self::REJECTED => 'Afgewezen',

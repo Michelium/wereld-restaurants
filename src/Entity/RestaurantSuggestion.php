@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Trait\EntityLifecycleTrait;
 use App\Enum\RestaurantSuggestionStatus;
 use App\Repository\RestaurantSuggestionRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -30,6 +31,9 @@ class RestaurantSuggestion {
 
     #[ORM\Column(type: 'string', enumType: RestaurantSuggestionStatus::class)]
     private RestaurantSuggestionStatus $status = RestaurantSuggestionStatus::PENDING;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $comment = null;
 
     public function getId(): ?int {
         return $this->id;
@@ -61,6 +65,18 @@ class RestaurantSuggestion {
 
     public function setStatus(RestaurantSuggestionStatus $status): static {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?string $comment): static
+    {
+        $this->comment = $comment;
+
         return $this;
     }
 

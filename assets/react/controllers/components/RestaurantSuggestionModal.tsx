@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {RestaurantType} from "../types/RestaurantType";
-import {Button, Divider, FormLabel, Input, Modal, ModalClose, ModalDialog, Stack, Typography} from "@mui/joy";
+import {Button, Divider, FormLabel, Input, Modal, ModalClose, ModalDialog, Stack, Textarea, Typography} from "@mui/joy";
 import CountrySelect from "./CountrySelect";
 import {CountryType} from "../types/CountryType";
 import toast from 'react-hot-toast';
@@ -21,6 +21,8 @@ const RestaurantSuggestionModal = ({restaurant, onClose, open}: RestaurantSugges
     const [city, setCity] = useState(restaurant?.city || '');
     const [countryId, setCountryId] = useState<number | null>(restaurant?.country?.id ?? null);
 
+    const [comment, setComment] = useState('');
+
     // Reset fields when modal opens
     useEffect(() => {
         if (!open) return;
@@ -32,6 +34,7 @@ const RestaurantSuggestionModal = ({restaurant, onClose, open}: RestaurantSugges
         setCity(restaurant?.city || '');
         setCountryId(restaurant?.country?.id ?? null);
         setSubmitting(false);
+        setComment('');
     }, [restaurant, open]);
 
     const handleSubmit = async () => {
@@ -56,6 +59,7 @@ const RestaurantSuggestionModal = ({restaurant, onClose, open}: RestaurantSugges
                 },
                 body: JSON.stringify({
                     restaurantId: restaurant?.id ?? null,
+                    comment,
                     fields
                 })
             });
@@ -156,6 +160,18 @@ const RestaurantSuggestionModal = ({restaurant, onClose, open}: RestaurantSugges
                         id="restaurant-city"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
+                    />
+                </Stack>
+
+                <Stack spacing={1.5} mt={1}>
+                    <Typography level="body-sm">Heb je nog een opmerking of extra informatie over dit restaurant?</Typography>
+                    <FormLabel htmlFor="restaurant-street">Opmerking:</FormLabel>
+                    <Textarea
+                        placeholder="Opmerking"
+                        id="restaurant-comment"
+                        value={comment}
+                        minRows={4}
+                        onChange={(e) => setComment(e.target.value)}
                     />
                 </Stack>
 
