@@ -1,19 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {CountryType} from '../types/CountryType';
 import '../../../styles/components/RestaurantFilterPanel.scss';
 import {MapContext, MapStateRepository} from '../providers/MapContextProvider';
 import CountrySelect from "./CountrySelect";
 
 const RestaurantFilterPanel = () => {
-    const [countries, setCountries] = useState<CountryType[]>([]);
     const {mapState, setMapState} = useContext(MapContext);
-
-    useEffect(() => {
-        fetch('/api/countries')
-            .then(res => res.json())
-            .then(setCountries)
-            .catch(err => console.error('Failed to load countries', err));
-    }, []);
 
     return (
         <div className="filters">
