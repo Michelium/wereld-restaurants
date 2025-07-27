@@ -9,9 +9,10 @@ interface CountrySelectProps {
     onChange: (value: CountryType | CountryType[] | null) => void;
     placeholder?: string;
     id?: string;
+    disabled?: boolean;
 }
 
-const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select country...', id}: CountrySelectProps) => {
+const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select country...', id, disabled}: CountrySelectProps) => {
     const [countries, setCountries] = useState<CountryType[]>([]);
 
     useEffect(() => {
@@ -36,6 +37,7 @@ const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select 
             classNamePrefix="country-select"
             placeholder={placeholder}
             menuPortalTarget={document.body}
+            isDisabled={disabled}
             id={id}
             styles={{
                 menuPortal: (base) => ({

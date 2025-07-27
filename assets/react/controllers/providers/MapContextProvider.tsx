@@ -8,6 +8,7 @@ type MapState = {
         countries: CountryType[];
     },
     activeRestaurant: RestaurantType | null;
+    loading: boolean;
 }
 
 export const MapStateRepository = {
@@ -16,9 +17,14 @@ export const MapStateRepository = {
         filters: {
             countries: []
         },
-        activeRestaurant: null
+        activeRestaurant: null,
+        loading: false,
     }),
     updaters: {
+        setLoading: (loading: boolean) => (state: MapState): MapState => ({
+            ...state,
+            loading
+        }),
         setRestaurants: (restaurants: RestaurantType[]) => (state: MapState): MapState => ({
             ...state,
             restaurants
