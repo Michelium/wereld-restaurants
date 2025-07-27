@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\RestaurantSuggestion;
 use App\Enum\RestaurantSuggestionStatus;
+use App\Service\RestaurantSuggestionService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -21,7 +22,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class RestaurantSuggestionCrudController extends AbstractCrudController {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly AdminUrlGenerator      $adminUrlGenerator
+        private readonly AdminUrlGenerator      $adminUrlGenerator, private readonly RestaurantSuggestionService $restaurantSuggestionService
     ) {
     }
 
@@ -71,12 +72,7 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
 
     #[Route('/admin/restaurant-suggestion/{id}/approve', name: 'admin_restaurant_suggestion_approve')]
     public function approve(Request $request, RestaurantSuggestion $suggestion): Response {
-        $suggestion->setStatus(RestaurantSuggestionStatus::APPROVED);
-
-        // todo : Create or update the restaurant entity based on the suggestion fields
-
-        $this->entityManager->persist($suggestion);
-        $this->entityManager->flush();
+        $this->restaurantSuggestionService->approveSuggestion($suggestion);
 
         $this->addFlash('success', 'Suggestie goedgekeurd');
         return $this->redirect($this->adminUrlGenerator->setController(RestaurantSuggestionCrudController::class)->generateUrl());
@@ -84,10 +80,7 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
 
     #[Route('/admin/restaurant-suggestion/{id}/reject', name: 'admin_restaurant_suggestion_reject')]
     public function reject(Request $request, RestaurantSuggestion $suggestion): Response {
-        $suggestion->setStatus(RestaurantSuggestionStatus::REJECTED);
-
-        $this->entityManager->persist($suggestion);
-        $this->entityManager->flush();
+        $this->restaurantSuggestionService->rejectSuggestion($suggestion);
 
         $this->addFlash('warning', 'Suggestie afgewezen');
         return $this->redirect($this->adminUrlGenerator->setController(RestaurantSuggestionCrudController::class)->generateUrl());
