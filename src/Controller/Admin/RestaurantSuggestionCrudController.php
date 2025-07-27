@@ -6,10 +6,15 @@ use App\Entity\RestaurantSuggestion;
 use App\Enum\RestaurantSuggestionStatus;
 use App\Service\RestaurantSuggestionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -21,9 +26,17 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RestaurantSuggestionCrudController extends AbstractCrudController {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly AdminUrlGenerator      $adminUrlGenerator, private readonly RestaurantSuggestionService $restaurantSuggestionService
+        private readonly AdminUrlGenerator      $adminUrlGenerator,
+        private readonly RestaurantSuggestionService $restaurantSuggestionService
     ) {
+    }
+
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder {
+        $queryBuilder = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        $queryBuilder->andWhere('entity.status = :status')
+            ->setParameter('status', RestaurantSuggestionStatus::PENDING);
+
+        return $queryBuilder;
     }
 
     public static function getEntityFqcn(): string {
