@@ -60,6 +60,7 @@ const RestaurantSuggestionModal = ({restaurant, onClose, open}: RestaurantSugges
                 body: JSON.stringify({
                     restaurantId: restaurant?.id ?? null,
                     comment,
+                    newRestaurant: false,
                     fields
                 })
             });

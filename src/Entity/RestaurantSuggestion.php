@@ -33,7 +33,12 @@ class RestaurantSuggestion {
     private RestaurantSuggestionStatus $status = RestaurantSuggestionStatus::PENDING;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['restaurant_suggestion:read'])]
     private ?string $comment = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['restaurant_suggestion:read'])]
+    private ?bool $newRestaurant = false;
 
     public function getId(): ?int {
         return $this->id;
@@ -76,6 +81,18 @@ class RestaurantSuggestion {
     public function setComment(?string $comment): static
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function isNewRestaurant(): ?bool
+    {
+        return $this->newRestaurant;
+    }
+
+    public function setNewRestaurant(bool $newRestaurant): static
+    {
+        $this->newRestaurant = $newRestaurant;
 
         return $this;
     }

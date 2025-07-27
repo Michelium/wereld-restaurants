@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+    {# @var current App\Entity\Restaurant #}
     {% set current = entity.getInstance().getRestaurant() %}
     {% set suggested = entity.getInstance().getFields() %}
 
@@ -75,6 +76,24 @@
             </div>
         </div>
     {% endif %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <strong>Google Maps</strong>
+            <p class="mb-0">
+                Huidig:
+                <a href="https://www.google.com/maps/search/?api=1&query={{ current.name }} {{ current.street }} {{ current.houseNumber }}, {{ current.postalCode }} {{ current.city }}"
+                   target="_blank">
+                    {{ current.street }} {{ current.houseNumber }}, {{ current.postalCode }} {{ current.city }}
+                </a>
+            </p>
+            <p>Voorgesteld:
+                <a href="https://www.google.com/maps/search/?api=1&query={{ suggested.name}} {{ suggested.street }} {{ suggested.houseNumber }}, {{ suggested.postalCode }} {{ suggested.city }}"
+                   target="_blank">
+                    {{ suggested.street }} {{ suggested.houseNumber }}, {{ suggested.postalCode }} {{ suggested.city }}
+                </a>
+            </p>
+        </div>
 
     <div class="mt-4 d-flex gap-3">
         <a href="{{ path('admin_restaurant_suggestion_approve', {id: entity.getInstance().id}) }}"

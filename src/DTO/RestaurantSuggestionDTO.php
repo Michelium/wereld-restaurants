@@ -10,6 +10,8 @@ class RestaurantSuggestionDTO {
 
     public ?string $comment = null;
 
+    public ?bool $newRestaurant = false;
+
     #[Assert\Valid]
     public RestaurantEditDTO $fields;
 
