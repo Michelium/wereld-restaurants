@@ -1,8 +1,9 @@
 import React, {useContext, useState} from 'react';
+import {Button, Divider, IconButton, Stack, Typography} from '@mui/joy';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
 import {getCountryIconUrl} from "../utils/getCountryIcon";
-import '../../../styles/components/RestaurantInfoPanel.scss';
-import {Button} from "@mui/joy";
 import RestaurantSuggestionModal from "./RestaurantSuggestionModal";
 
 const RestaurantInfoPanel = () => {
@@ -10,72 +11,102 @@ const RestaurantInfoPanel = () => {
     const [showSuggestionModal, setShowSuggestionModal] = useState(false);
     const restaurant = mapState.activeRestaurant;
 
-    if (!restaurant) {
-        return;
-    }
+    if (!restaurant) return null;
+
+    const closePanel = () => {
+        setMapState(MapStateRepository.updaters.clearActiveRestaurant()(mapState));
+    };
+
+    const googleMapsUrl = restaurant.street && restaurant.houseNumber && restaurant.city
+        ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            `${restaurant.name} ${restaurant.street} ${restaurant.houseNumber}, ${restaurant.postalCode ?? ''} ${restaurant.city}`
+        )}`
+        : null;
 
     return (
-        <div className="restaurant-info">
-            <div className="restaurant-info__header">
-                <strong className="restaurant-info__title">{restaurant.name}</strong>
+        <>
+            <Stack spacing={0.5}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Typography level="title-md">{restaurant.name}</Typography>
+                    <IconButton onClick={closePanel} variant="plain" size="sm">
+                        <CloseRoundedIcon/>
+                    </IconButton>
+                </Stack>
+
                 {restaurant.country && (
-                    <img
-                        src={getCountryIconUrl(restaurant.country.code)}
-                        alt={restaurant.country.code}
-                        className="restaurant-info__flag"
-                    />
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                        <img
+                            src={getCountryIconUrl(restaurant.country.code)}
+                            alt={restaurant.country.name}
+                            width={24}
+                            height={16}
+                            style={{border: '1px solid #ccc'}}
+                        />
+                        <Typography level="body-sm">{restaurant.country.name}</Typography>
+                    </Stack>
                 )}
-            </div>
+            </Stack>
 
-            <div className="restaurant-info__address">
-                {restaurant.street && restaurant.houseNumber && restaurant.postalCode && restaurant.city ? (
-                    <>
-                        <p>
-                            {restaurant.street} {restaurant.houseNumber}<br/>
-                            {restaurant.postalCode} {restaurant.city}
-                        </p>
 
-                        <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.name + ' ' + restaurant.street + ' ' + restaurant.houseNumber + ', ' + restaurant.postalCode + ' ' + restaurant.city)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="restaurant-info__address-link"
-                        >
-                            Google Maps
-                        </a>
-                    </>
-                ) : 'Adres onbekend'}
-            </div>
+            <Divider sx={{my: 1}}/>
 
-            <div className="restaurant-info__country">
-                {restaurant.country?.name ?? 'Onbekend land'}
-            </div>
+            <Stack spacing={1}>
+                <Typography level="body-sm" textColor="text.secondary">
+                    Adres
+                </Typography>
+                {restaurant.street && restaurant.houseNumber && restaurant.city ? (
+                    <Typography>
+                        {restaurant.street} {restaurant.houseNumber}<br/>
+                        {restaurant.postalCode} {restaurant.city}
+                    </Typography>
+                ) : (
+                    <Typography color="neutral" level="body-sm" sx={{fontStyle: 'italic'}}>
+                        Adres onbekend
+                    </Typography>
+                )}
 
-            <hr/>
+                {googleMapsUrl && (
+                    <Button
+                        component="a"
+                        href={googleMapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        startDecorator={<LocationOnRoundedIcon/>}
+                        variant="outlined"
+                        size="sm"
+                        sx={{mt: 1, alignSelf: 'flex-start'}}
+                    >
+                        Google Maps
+                    </Button>
+                )}
 
-            <RestaurantSuggestionModal
-                restaurant={restaurant}
-                open={showSuggestionModal}
-                onClose={() => setShowSuggestionModal(false)}
-            />
+                <Divider sx={{my: 2}}/>
 
-            <div className="restaurant-info__actions">
-                <Button
-                    size="sm"
-                    variant="solid"
-                    color="primary"
-                    onClick={() => setShowSuggestionModal(true)}
-                >
-                    Verbetering voorstellen
-                </Button>
-                <Button
-                    onClick={() => setMapState(MapStateRepository.updaters.clearActiveRestaurant()(mapState))}
-                    size="sm"
-                    variant="outlined"
-                    color="neutral"
-                >Sluiten</Button>
-            </div>
-        </div>
+                <RestaurantSuggestionModal
+                    restaurant={restaurant}
+                    open={showSuggestionModal}
+                    onClose={() => setShowSuggestionModal(false)}
+                />
+
+                <Stack direction="row" spacing={1} mt={3}>
+                    <Button
+                        size="sm"
+                        variant="solid"
+                        color="primary"
+                        onClick={() => setShowSuggestionModal(true)}
+                    >
+                        Verbetering voorstellen
+                    </Button>
+                    <Button
+                        size="sm"
+                        variant="plain"
+                        onClick={closePanel}
+                    >
+                        Sluiten
+                    </Button>
+                </Stack>
+            </Stack>
+        </>
     );
 };
 

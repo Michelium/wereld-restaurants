@@ -1,26 +1,31 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {CountryType} from '../types/CountryType';
-import '../../../styles/components/RestaurantFilterPanel.scss';
 import {MapContext, MapStateRepository} from '../providers/MapContextProvider';
-import CountrySelect from "./CountrySelect";
+import CountrySelect from './CountrySelect';
+import {Stack, Typography} from '@mui/joy';
 
 const RestaurantFilterPanel = () => {
     const {mapState, setMapState} = useContext(MapContext);
 
     return (
-        <div className="filters">
-            <p className="filters__label">Filter op land</p>
+        <Stack spacing={1}>
+            <Typography level="body-md" fontWeight="lg">
+                Filter op land
+            </Typography>
+
             <CountrySelect
                 isMulti
                 disabled={mapState.loading}
                 value={mapState.filters.countries}
                 onChange={(selected) => {
-                    setMapState(MapStateRepository.updaters.setFilterCountries(selected as CountryType[]))
+                    setMapState(
+                        MapStateRepository.updaters.setFilterCountries(selected as CountryType[])
+                    );
                 }}
                 placeholder="Selecteer landen..."
                 showRestaurantCount
             />
-        </div>
+        </Stack>
     );
 };
 

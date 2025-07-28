@@ -14,8 +14,6 @@ const MapEffect = () => {
         const zoom = map.getZoom();
         const skip = zoom < 10 && !hasFilters;
 
-        console.log('Zoom level:', zoom);
-
         if (skip) {
             setMapState(MapStateRepository.updaters.setRestaurants([]));
             setShouldShowPrompt(true);
