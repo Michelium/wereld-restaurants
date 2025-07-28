@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Restaurant;
 use App\Entity\User;
+use App\Entity\RestaurantSuggestion;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -35,6 +36,9 @@ class DashboardController extends AbstractDashboardController {
 
     public function configureMenuItems(): iterable {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+
+        yield MenuItem::section('Beheer');
+        yield MenuItem::linkToCrud('Suggesties', 'fa fa-lightbulb', RestaurantSuggestion::class);
 
         yield MenuItem::section('Restaurants');
         yield MenuItem::linkToCrud('Restaurants', 'fa fa-utensils', Restaurant::class);

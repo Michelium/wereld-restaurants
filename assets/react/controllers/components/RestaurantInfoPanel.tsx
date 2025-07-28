@@ -1,11 +1,13 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
 import {getCountryIconUrl} from "../utils/getCountryIcon";
 import '../../../styles/components/RestaurantInfoPanel.scss';
 import {Button} from "@mui/joy";
+import RestaurantSuggestionModal from "./RestaurantSuggestionModal";
 
 const RestaurantInfoPanel = () => {
     const {mapState, setMapState} = useContext(MapContext);
+    const [showSuggestionModal, setShowSuggestionModal] = useState(false);
     const restaurant = mapState.activeRestaurant;
 
     if (!restaurant) {
@@ -51,13 +53,20 @@ const RestaurantInfoPanel = () => {
 
             <hr/>
 
+            <RestaurantSuggestionModal
+                restaurant={restaurant}
+                open={showSuggestionModal}
+                onClose={() => setShowSuggestionModal(false)}
+            />
+
             <div className="restaurant-info__actions">
                 <Button
                     size="sm"
                     variant="solid"
                     color="primary"
+                    onClick={() => setShowSuggestionModal(true)}
                 >
-                    Probleem melden
+                    Verbetering voorstellen
                 </Button>
                 <Button
                     onClick={() => setMapState(MapStateRepository.updaters.clearActiveRestaurant()(mapState))}

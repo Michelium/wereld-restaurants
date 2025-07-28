@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Trait\EntityLifecycleTrait;
 use App\Repository\RestaurantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -59,6 +61,20 @@ class Restaurant {
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
+
+    /**
+     * @var Collection<int, RestaurantSuggestion>
+     */
+    #[ORM\OneToMany(targetEntity: RestaurantSuggestion::class, mappedBy: 'restaurant')]
+    private Collection $restaurantSuggestions;
+
+    public function __construct() {
+        $this->restaurantSuggestions = new ArrayCollection();
+    }
+
+    public function __toString(): string {
+        return $this->getName();
+    }
 
     public function getId(): ?int {
         return $this->id;
@@ -134,50 +150,69 @@ class Restaurant {
         return $this;
     }
 
-    public function getCountry(): ?Country
-    {
+    public function getCountry(): ?Country {
         return $this->country;
     }
 
-    public function setCountry(?Country $country): static
-    {
+    public function setCountry(?Country $country): static {
         $this->country = $country;
 
         return $this;
     }
 
-    public function getOsmId(): ?string
-    {
+    public function getOsmId(): ?string {
         return $this->osmId;
     }
 
-    public function setOsmId(?string $osmId): static
-    {
+    public function setOsmId(?string $osmId): static {
         $this->osmId = $osmId;
 
         return $this;
     }
 
-    public function getOsmCuisine(): ?string
-    {
+    public function getOsmCuisine(): ?string {
         return $this->osmCuisine;
     }
 
-    public function setOsmCuisine(?string $osmCuisine): static
-    {
+    public function setOsmCuisine(?string $osmCuisine): static {
         $this->osmCuisine = $osmCuisine;
 
         return $this;
     }
 
-    public function getWebsite(): ?string
-    {
+    public function getWebsite(): ?string {
         return $this->website;
     }
 
-    public function setWebsite(?string $website): static
-    {
+    public function setWebsite(?string $website): static {
         $this->website = $website;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RestaurantSuggestion>
+     */
+    public function getRestaurantSuggestions(): Collection {
+        return $this->restaurantSuggestions;
+    }
+
+    public function addRestaurantSuggestion(RestaurantSuggestion $restaurantSuggestion): static {
+        if (!$this->restaurantSuggestions->contains($restaurantSuggestion)) {
+            $this->restaurantSuggestions->add($restaurantSuggestion);
+            $restaurantSuggestion->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRestaurantSuggestion(RestaurantSuggestion $restaurantSuggestion): static {
+        if ($this->restaurantSuggestions->removeElement($restaurantSuggestion)) {
+            // set the owning side to null (unless already changed)
+            if ($restaurantSuggestion->getRestaurant() === $this) {
+                $restaurantSuggestion->setRestaurant(null);
+            }
+        }
 
         return $this;
     }

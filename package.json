@@ -33,6 +33,7 @@
         "@emotion/styled": "^11.14.1",
         "@mui/joy": "^5.0.0-beta.52",
         "leaflet": "^1.9.4",
+        "react-hot-toast": "^2.5.2",
         "react-leaflet": "^4.2.1",
         "react-leaflet-cluster": "^2.1.0",
         "react-select": "^5.10.2"
