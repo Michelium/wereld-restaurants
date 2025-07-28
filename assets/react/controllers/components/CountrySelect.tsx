@@ -10,9 +10,10 @@ interface CountrySelectProps {
     placeholder?: string;
     id?: string;
     disabled?: boolean;
+    showRestaurantCount?: boolean;
 }
 
-const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select country...', id, disabled}: CountrySelectProps) => {
+const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select country...', id, disabled, showRestaurantCount = false}: CountrySelectProps) => {
     const [countries, setCountries] = useState<CountryType[]>([]);
 
     useEffect(() => {
@@ -57,16 +58,47 @@ const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select 
                     gap: '6px',
                 }),
             }}
-            formatOptionLabel={(country) => (
-                <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                    <img
-                        src={getCountryIconUrl(country.code)}
-                        alt={country.name}
-                        style={{width: 20, height: 14, border: '1px solid #ccc'}}
-                    />
-                    {country.name}
-                </div>
-            )}
+            formatOptionLabel={(country, { context }) => {
+                // Rendering options in the dropdown menu
+                if (context === 'menu') {
+                    return (
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                width: '100%',
+                            }}
+                        >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <img
+                                    src={getCountryIconUrl(country.code)}
+                                    alt={country.name}
+                                    style={{ width: 20, height: 14, border: '1px solid #ccc' }}
+                                />
+                                {country.name}
+                            </div>
+                            {showRestaurantCount && (
+                                <div style={{ marginLeft: 'auto', opacity: 0.6, fontVariantNumeric: 'tabular-nums' }}>
+                                    {country.restaurantCount ?? 0}
+                                </div>
+                            )}
+                        </div>
+                    );
+                }
+
+                // Value display (selected item)
+                return (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <img
+                            src={getCountryIconUrl(country.code)}
+                            alt={country.name}
+                            style={{ width: 20, height: 14, border: '1px solid #ccc' }}
+                        />
+                        {country.name}
+                    </div>
+                );
+            }}
         />
     );
 };

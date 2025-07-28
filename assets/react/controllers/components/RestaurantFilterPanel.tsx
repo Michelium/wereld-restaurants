@@ -18,6 +18,7 @@ const RestaurantFilterPanel = () => {
                     setMapState(MapStateRepository.updaters.setFilterCountries(selected as CountryType[]))
                 }}
                 placeholder="Selecteer landen..."
+                showRestaurantCount
             />
         </div>
     );
