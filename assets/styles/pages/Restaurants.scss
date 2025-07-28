@@ -10,14 +10,15 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         width: 350px;
 
+        $filter-height: 100px;
         &--filters {
             top: 1rem;
             right: 1rem;
-            height: 100px;
+            height: $filter-height;
         }
 
         &--info {
-            top: calc(1rem + 75px + 1rem + 2rem); // 1rem for top padding, 75px for filters, 1rem for padding top element, and 2rem for bottom padding
+            top: calc(1rem + $filter-height + 1rem + 2rem); // 1rem for top padding, 75px for filters, 1rem for padding top element, and 2rem for bottom padding
             right: 1rem;
         }
     }
