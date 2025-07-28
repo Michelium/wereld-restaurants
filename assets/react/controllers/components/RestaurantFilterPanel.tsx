@@ -19,8 +19,6 @@ const RestaurantFilterPanel = () => {
                 }}
                 placeholder="Selecteer landen..."
             />
-
-            {mapState.loading && <div className="filters__loading">Laden...</div>}
         </div>
     );
 };

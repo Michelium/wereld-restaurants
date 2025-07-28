@@ -22,12 +22,7 @@ const RestaurantMap = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <MapEffect
-                selectedCountries={mapState.filters.countries}
-                onRestaurantsUpdate={(data) =>
-                    setMapState(MapStateRepository.updaters.setRestaurants(data)(mapState))
-                }
-            />
+            <MapEffect />
 
             <MarkerClusterGroup chunkedLoading>
                 {mapState.restaurants.map((restaurant) => (

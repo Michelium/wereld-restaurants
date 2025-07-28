@@ -3,13 +3,11 @@ import RestaurantMap from "../components/RestaurantMap";
 import RestaurantFilterPanel from "../components/RestaurantFilterPanel";
 import '../../../styles/pages/Restaurants.scss';
 import {MapContext} from "../providers/MapContextProvider";
-import {useFetchRestaurantsOnFilterChange} from "../hooks/useFetchRestaurantsOnFilterChange";
 import RestaurantInfoPanel from "../components/RestaurantInfoPanel";
+import ZoomPrompt from "../components/ZoomPrompt";
 
 const Restaurants = () => {
     const {mapState} = useContext(MapContext);
-
-    useFetchRestaurantsOnFilterChange();
 
     return (
         <div className="restaurants-map-wrapper">
@@ -22,6 +20,8 @@ const Restaurants = () => {
                 </div>
             )}
             <div className="restaurants-map">
+                {mapState.shouldShowZoomPrompt && <ZoomPrompt/>}
+
                 <RestaurantMap/>
             </div>
         </div>
