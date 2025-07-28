@@ -8,6 +8,8 @@ type MapState = {
         countries: CountryType[];
     },
     activeRestaurant: RestaurantType | null;
+    loading: boolean;
+    shouldShowZoomPrompt: boolean;
 }
 
 export const MapStateRepository = {
@@ -16,9 +18,15 @@ export const MapStateRepository = {
         filters: {
             countries: []
         },
-        activeRestaurant: null
+        activeRestaurant: null,
+        loading: false,
+        shouldShowZoomPrompt: true
     }),
     updaters: {
+        setLoading: (loading: boolean) => (state: MapState): MapState => ({
+            ...state,
+            loading
+        }),
         setRestaurants: (restaurants: RestaurantType[]) => (state: MapState): MapState => ({
             ...state,
             restaurants
@@ -26,6 +34,10 @@ export const MapStateRepository = {
         setFilters: (filters: MapState['filters']) => (state: MapState): MapState => ({
             ...state,
             filters
+        }),
+        setShouldShowZoomPrompt: (shouldShow: boolean) => (state: MapState): MapState => ({
+            ...state,
+            shouldShowZoomPrompt: shouldShow
         }),
         setFilterCountries: (countries: CountryType[]) => (state: MapState): MapState => ({
             ...state,

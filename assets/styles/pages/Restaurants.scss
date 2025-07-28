@@ -9,15 +9,18 @@
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         width: 350px;
+        max-width: 90vw;
+
+        $filter-height: 75px;
 
         &--filters {
             top: 1rem;
             right: 1rem;
-            height: 75px;
+            height: $filter-height;
         }
 
         &--info {
-            top: calc(1rem + 75px + 1rem + 2rem); // 1rem for top padding, 75px for filters, 1rem for padding top element, and 2rem for bottom padding
+            top: calc(1rem + $filter-height + 1rem + 2rem); // stacked below filter
             right: 1rem;
         }
     }

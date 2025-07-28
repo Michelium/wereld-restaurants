@@ -1,29 +1,29 @@
-import {useContext, useEffect} from 'react';
-import {useMap} from 'react-leaflet';
-import {CountryType} from '../types/CountryType';
+import {useContext, useEffect, useState} from "react";
+import {useMap} from "react-leaflet";
 import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
+import {CountryType} from "../types/CountryType";
 
-interface MapEffectProps {
-    selectedCountries: CountryType[];
-    onRestaurantsUpdate: (restaurants: any[]) => void;
-}
-
-const MapEffect = ({selectedCountries, onRestaurantsUpdate}: MapEffectProps) => {
+const MapEffect = () => {
     const {mapState, setMapState} = useContext(MapContext);
     const map = useMap();
+    const [shouldShowPrompt, setShouldShowPrompt] = useState(false);
 
-    if (map.getZoom() < 8) {
-        setMapState(MapStateRepository.updaters.setRestaurants([])(mapState));
-        return;
-    }
+    const hasFilters = mapState.filters.countries.length > 0;
 
-    useEffect(() => {
-        const load = async () => {
-            if (map.getZoom() < 8) {
-                onRestaurantsUpdate([]);
-                return;
-            }
+    const fetchRestaurants = async () => {
+        const zoom = map.getZoom();
+        const skip = zoom < 10 && !hasFilters;
 
+        if (skip) {
+            setMapState(MapStateRepository.updaters.setRestaurants([]));
+            setShouldShowPrompt(true);
+            return;
+        }
+
+        setShouldShowPrompt(false);
+        setMapState(MapStateRepository.updaters.setLoading(true));
+
+        try {
             const bounds = map.getBounds();
             const payload = {
                 south: bounds.getSouth(),
@@ -33,28 +33,45 @@ const MapEffect = ({selectedCountries, onRestaurantsUpdate}: MapEffectProps) => 
             };
 
             const params = new URLSearchParams();
-            params.append('bounds', JSON.stringify(payload));
-            selectedCountries.forEach((c) => params.append('countries[]', c.code));
+            params.append("bounds", JSON.stringify(payload));
+            mapState.filters.countries.forEach((country: CountryType) => {
+                params.append("countries[]", country.code);
+            });
 
             const res = await fetch(`/api/restaurants?${params.toString()}`);
             const data = await res.json();
-            onRestaurantsUpdate(data);
-        };
 
-        const handleMoveEnd = () => {
+            setMapState(MapStateRepository.updaters.setRestaurants(data));
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setMapState(MapStateRepository.updaters.setLoading(false));
+        }
+    };
+
+    useEffect(() => {
+        const handler = () => {
             clearTimeout((map as any)._markerFetchTimeout);
             (map as any)._markerFetchTimeout = setTimeout(() => {
-                load();
+                fetchRestaurants();
             }, 300);
         };
 
-        map.on('moveend', handleMoveEnd);
+        map.on("moveend", handler);
         return () => {
-            map.off('moveend', handleMoveEnd);
+            map.off("moveend", handler);
             clearTimeout((map as any)._markerFetchTimeout);
         };
-    }, [map, selectedCountries, onRestaurantsUpdate]);
+    }, [map, mapState.filters]);
 
+    useEffect(() => {
+        fetchRestaurants();
+    }, [mapState.filters]);
+
+    // Save this flag in state so the map component can show the message
+    useEffect(() => {
+        setMapState(MapStateRepository.updaters.setShouldShowZoomPrompt(shouldShowPrompt));
+    }, [shouldShowPrompt]);
 
     return null;
 };

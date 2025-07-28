@@ -5,7 +5,6 @@ namespace App\Controller\Api;
 use App\Repository\CountryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/countries', name: 'api_country')]
@@ -18,9 +17,18 @@ class CountryController extends AbstractController {
 
     #[Route('', name: '_all', methods: ['GET'])]
     public function all(): JsonResponse {
-        $restaurants = $this->countryRepository->findBy([], orderBy: ['name' => 'ASC']);
+        $countries = $this->countryRepository->findBy([], orderBy: ['name' => 'ASC']);
 
-        return $this->json($restaurants, 200, [], ['groups' => ['country:read']]);
+        $data = array_map(fn($country) => [
+            'id' => $country->getId(),
+            'code' => $country->getCode(),
+            'name' => $country->getName(),
+            'flag' => $country->getFlag(),
+            'restaurantCount' => $country->getRestaurants()->count(),
+        ], $countries);
+
+
+        return $this->json($data);
     }
 
 }

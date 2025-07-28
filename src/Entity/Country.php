@@ -36,6 +36,7 @@ class Country {
      * @var Collection<int, Restaurant>
      */
     #[ORM\OneToMany(targetEntity: Restaurant::class, mappedBy: 'country')]
+    #[Groups(['country:read'])]
     private Collection $restaurants;
 
     public function __construct() {
