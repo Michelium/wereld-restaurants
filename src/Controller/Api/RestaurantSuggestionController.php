@@ -5,55 +5,46 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\DTO\RestaurantSuggestionDTO;
-use App\Entity\RestaurantSuggestion;
-use App\Enum\RestaurantSuggestionStatus;
-use App\Repository\CountryRepository;
-use App\Repository\RestaurantRepository;
+use App\Enum\RestaurantSuggestionType;
+use App\Service\RestaurantSuggestionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RestaurantSuggestionController extends AbstractController {
 
     public function __construct(
-        private readonly SerializerInterface    $serializer,
-        private readonly ValidatorInterface     $validator,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly RestaurantRepository   $restaurantRepository,
-        private readonly CountryRepository      $countryRepository
+        private readonly SerializerInterface         $serializer,
+        private readonly ValidatorInterface          $validator,
+        private readonly EntityManagerInterface      $entityManager,
+        private readonly RestaurantSuggestionService $restaurantSuggestionService
     ) {
     }
 
     #[Route('/api/restaurant-suggestions', name: 'api_restaurant_suggestions', methods: ['POST'])]
     public function __invoke(Request $request): JsonResponse {
-        $dto = $this->serializer->deserialize($request->getContent(), RestaurantSuggestionDTO::class, 'json');
+        try {
+            $dto = $this->serializer->deserialize($request->getContent(), RestaurantSuggestionDTO::class, 'json');
+        } catch (ExceptionInterface $e) {
+            return $this->json(['error' => 'Invalid JSON format: ' . $e->getMessage()], 400);
+        }
+
         $errors = $this->validator->validate($dto);
 
         if (count($errors) > 0) {
             return $this->json(['errors' => (string)$errors], 400);
         }
 
-        $restaurant = $dto->restaurantId ? $this->restaurantRepository->find($dto->restaurantId) : null;
-        $country = $dto->fields->countryId ? $this->countryRepository->find($dto->fields->countryId) : null;
+        $restaurantSuggestion = $dto->type === RestaurantSuggestionType::CLOSED->value
+            ? $this->restaurantSuggestionService->createCloseSuggestion($dto)
+            : $this->restaurantSuggestionService->createFromDTO($dto);
 
-        $suggestion = new RestaurantSuggestion();
-        $suggestion->setRestaurant($restaurant);
-        $suggestion->setStatus(RestaurantSuggestionStatus::PENDING);
-        $suggestion->setComment($dto->comment);
-        $suggestion->setFields([
-            'name' => $dto->fields->name,
-            'street' => $dto->fields->street,
-            'houseNumber' => $dto->fields->houseNumber,
-            'postalCode' => $dto->fields->postalCode,
-            'city' => $dto->fields->city,
-            'countryId' => $country?->getId(),
-        ]);
-
-        $this->entityManager->persist($suggestion);
+        $this->entityManager->persist($restaurantSuggestion);
         $this->entityManager->flush();
 
         return $this->json(['success' => true], 201);

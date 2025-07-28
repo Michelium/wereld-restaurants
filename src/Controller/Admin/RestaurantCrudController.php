@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Restaurant;
+use App\Enum\RestaurantStatus;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -11,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -83,6 +85,14 @@ class RestaurantCrudController extends AbstractCrudController {
             ->setLabel('Plaats');
 
         yield FormField::addColumn(4);
+        yield FormField::addFieldset('Instellingen');
+        yield ChoiceField::new('status')
+            ->setChoices(RestaurantStatus::choiceList())
+            ->renderAsBadges([
+                RestaurantStatus::OPEN->value => 'success',
+                RestaurantStatus::CLOSED->value => 'secondary',
+            ]);
+
         yield FormField::addFieldset('Locatie');
         yield NumberField::new('latitude')
             ->hideOnIndex()

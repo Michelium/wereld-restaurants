@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Trait\EntityLifecycleTrait;
+use App\Enum\RestaurantStatus;
 use App\Repository\RestaurantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -67,6 +68,9 @@ class Restaurant {
      */
     #[ORM\OneToMany(targetEntity: RestaurantSuggestion::class, mappedBy: 'restaurant')]
     private Collection $restaurantSuggestions;
+
+    #[ORM\Column(type: 'string', enumType: RestaurantStatus::class, options: ['default' => RestaurantStatus::OPEN->value])]
+    private RestaurantStatus $status = RestaurantStatus::OPEN;
 
     public function __construct() {
         $this->restaurantSuggestions = new ArrayCollection();
@@ -216,4 +220,14 @@ class Restaurant {
 
         return $this;
     }
+
+    public function getStatus(): RestaurantStatus {
+        return $this->status;
+    }
+
+    public function setStatus(RestaurantStatus $status): Restaurant {
+        $this->status = $status;
+        return $this;
+    }
+
 }

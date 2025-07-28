@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Trait\EntityLifecycleTrait;
 use App\Enum\RestaurantSuggestionStatus;
+use App\Enum\RestaurantSuggestionType;
 use App\Repository\RestaurantSuggestionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,6 +32,9 @@ class RestaurantSuggestion {
 
     #[ORM\Column(type: 'string', enumType: RestaurantSuggestionStatus::class)]
     private RestaurantSuggestionStatus $status = RestaurantSuggestionStatus::PENDING;
+
+    #[ORM\Column(type: 'string', enumType: RestaurantSuggestionType::class, options: ['default' => RestaurantSuggestionType::FIELDS->value])]
+    private RestaurantSuggestionType $type = RestaurantSuggestionType::FIELDS;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['restaurant_suggestion:read'])]
@@ -70,6 +74,15 @@ class RestaurantSuggestion {
 
     public function setStatus(RestaurantSuggestionStatus $status): static {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getType(): RestaurantSuggestionType {
+        return $this->type;
+    }
+
+    public function setType(RestaurantSuggestionType $type): RestaurantSuggestion {
+        $this->type = $type;
         return $this;
     }
 

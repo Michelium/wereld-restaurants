@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\RestaurantSuggestion;
 use App\Enum\RestaurantSuggestionStatus;
+use App\Enum\RestaurantSuggestionType;
 use App\Service\RestaurantSuggestionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -74,6 +75,16 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
                     RestaurantSuggestionStatus::APPROVED->value => 'success',
                     RestaurantSuggestionStatus::REJECTED->value => 'danger',
                 ]);
+            yield ChoiceField::new('type')
+                ->setLabel('Type suggestie')
+                ->setChoices(RestaurantSuggestionType::cases())
+                ->renderAsBadges([
+                    RestaurantSuggestionType::FIELDS->value => 'info',
+                    RestaurantSuggestionType::CLOSED->value => 'secondary',
+                ]);
+            yield DateTimeField::new('createdAt')
+                ->setFormat('dd-MM-yyyy HH:mm')
+                ->setLabel('Ingediend op');
         }
     }
 

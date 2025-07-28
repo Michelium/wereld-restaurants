@@ -12,6 +12,9 @@ class RestaurantSuggestionDTO {
 
     public ?bool $newRestaurant = false;
 
+    #[Assert\Choice(choices: ['fields', 'closed'], message: 'Invalid suggestion type.')]
+    public ?string $type = null;
+
     #[Assert\Valid]
     public RestaurantEditDTO $fields;
 
