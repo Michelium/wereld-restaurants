@@ -23,5 +23,10 @@
             top: calc(1rem + $filter-height + 1rem + 2rem); // stacked below filter
             right: 1rem;
         }
+
+        &--new-restaurant {
+            bottom: 3rem;
+            right: 1rem;
+        }
     }
 }

@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,6 +69,8 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
         } else {
             yield IdField::new('id');
             yield AssociationField::new('restaurant');
+            yield TextField::new('fields[name]')
+                ->setLabel('(Voorgestelde) naam');
             yield ChoiceField::new('status')
                 ->setChoices(RestaurantSuggestionStatus::cases())
                 ->renderAsBadges([
@@ -81,6 +84,7 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
                 ->renderAsBadges([
                     RestaurantSuggestionType::FIELDS->value => 'info',
                     RestaurantSuggestionType::CLOSED->value => 'secondary',
+                    RestaurantSuggestionType::NEW->value => 'success',
                 ]);
             yield DateTimeField::new('createdAt')
                 ->setFormat('dd-MM-yyyy HH:mm')

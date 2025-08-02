@@ -28,6 +28,7 @@ readonly final class RestaurantSuggestionService {
 
         switch ($restaurantSuggestion->getType()) {
             case RestaurantSuggestionType::FIELDS:
+            case RestaurantSuggestionType::NEW:
                 $restaurant->setName($restaurantSuggestion->getFields()['name'] ?? $restaurant->getName());
                 $restaurant->setStreet($restaurantSuggestion->getFields()['street'] ?? $restaurant->getStreet());
                 $restaurant->setHouseNumber($restaurantSuggestion->getFields()['houseNumber'] ?? $restaurant->getHouseNumber());
@@ -65,8 +66,9 @@ readonly final class RestaurantSuggestionService {
         $restaurantSuggestion = new RestaurantSuggestion();
         $restaurantSuggestion->setRestaurant($restaurant);
         $restaurantSuggestion->setStatus(RestaurantSuggestionStatus::PENDING);
-        $restaurantSuggestion->setType(RestaurantSuggestionType::FIELDS);
+        $restaurantSuggestion->setType($dto->getTypeAsEnum());
         $restaurantSuggestion->setComment($dto->comment);
+        $restaurantSuggestion->setNewRestaurant($dto->newRestaurant);
         $restaurantSuggestion->setFields([
             'name' => $dto->fields->name,
             'street' => $dto->fields->street,
