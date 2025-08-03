@@ -77,14 +77,9 @@ class RestaurantCrudController extends AbstractCrudController {
             ->setLabel('Naam');
         yield AssociationField::new('country')
             ->setLabel('Land')
-            ->formatValue(function ($value, $entity) {
-                if (!$value) return 'Niets';
-
-                $name = $value->getName();
-                $flagUrl = $this->assets->getUrl("build/images/flags/{$value->getFlag()}");
-
-                return sprintf('<img src="%s" alt="%s" style="width: 20px; height: 14px; border: 1px solid #ccc; margin-right: 5px;" />%s', $flagUrl, $name, $name);
-            })
+            ->renderAsHtml()
+            ->setFormTypeOption('choice_label', fn ($country) => $this->renderCountryFlag($country))
+            ->formatValue(fn ($value, $entity) => $this->renderCountryFlag($value))
             ->setRequired(false);
 
         yield FormField::addFieldset('Adres');
@@ -199,5 +194,21 @@ class RestaurantCrudController extends AbstractCrudController {
         }
 
         return parent::getRedirectResponseAfterSave($context, $action);
+    }
+
+    private function renderCountryFlag(?object $country): string {
+        if (!$country) {
+            return 'Niets';
+        }
+
+        $name = $country->getName();
+        $flagUrl = $this->assets->getUrl("build/images/flags/{$country->getFlag()}");
+
+        return sprintf(
+            '<img src="%s" alt="%s" style="width: 20px; height: 14px; border: 1px solid #ccc; margin-right: 5px;" />%s',
+            $flagUrl,
+            htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+        );
     }
 }
