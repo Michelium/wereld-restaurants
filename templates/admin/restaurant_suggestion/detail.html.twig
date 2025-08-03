@@ -128,10 +128,19 @@
         </div>
     </div>
 
-    <div class="mt-4 d-flex gap-3">
-        <a href="{{ path('admin_restaurant_suggestion_approve', {id: suggestion.id}) }}"
-           class="btn btn-light">✅ &nbsp;Goedkeuren</a>
-        <a href="{{ path('admin_restaurant_suggestion_reject', {id: suggestion.id}) }}"
-           class="btn btn-light">❌ &nbsp;Afwijzen</a>
+    <hr>
+
+    <div class="mt-4 d-flex flex-column gap-4">
+        <div class="d-flex align-items-start">
+            <a href="{{ path('admin_restaurant_suggestion_approve', {id: suggestion.id}) }}" class="btn btn-light me-2 flex-shrink-0 text-left" style="min-width: 120px;">✅ &nbsp;Goedkeuren</a>
+            <span class="text-muted">
+                Keurt de suggestie goed en voert de wijziging door. <br>
+                Bij een nieuw restaurant kan je de suggestie eerst aanpassen voordat je deze publiceert.
+            </span>
+        </div>
+        <div class="d-flex align-items-start">
+            <a href="{{ path('admin_restaurant_suggestion_reject', {id: suggestion.id}) }}" class="btn btn-light me-2 flex-shrink-0 text-left" style="min-width: 120px;">❌ &nbsp;Afwijzen</a>
+            <span class="text-muted">Wijst de suggestie af en negeert de wijziging.</span>
+        </div>
     </div>
 {% endblock %}

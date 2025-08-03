@@ -22,13 +22,20 @@ readonly final class RestaurantSuggestionService {
     }
 
     public function approveSuggestion(RestaurantSuggestion $restaurantSuggestion): void {
+        if ($restaurantSuggestion->getType() === RestaurantSuggestionType::NEW) {
+            // If the restaurant doesn't exist, we don't create a restaurant, this is done after the suggestion is approved by the user.
+            $restaurantSuggestion->setStatus(RestaurantSuggestionStatus::APPROVED);
+            $this->entityManager->persist($restaurantSuggestion);
+            $this->entityManager->flush();
+            return;
+        }
+
         $restaurant = $restaurantSuggestion->isNewRestaurant()
             ? new Restaurant()
             : $restaurantSuggestion->getRestaurant();
 
         switch ($restaurantSuggestion->getType()) {
             case RestaurantSuggestionType::FIELDS:
-            case RestaurantSuggestionType::NEW:
                 $restaurant->setName($restaurantSuggestion->getFields()['name'] ?? $restaurant->getName());
                 $restaurant->setStreet($restaurantSuggestion->getFields()['street'] ?? $restaurant->getStreet());
                 $restaurant->setHouseNumber($restaurantSuggestion->getFields()['houseNumber'] ?? $restaurant->getHouseNumber());

@@ -61,6 +61,7 @@ class Restaurant {
     private ?string $osmCuisine = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['restaurant:read'])]
     private ?string $website = null;
 
     /**

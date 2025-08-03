@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\DTO\RestaurantPrefillDTO;
 use App\Entity\RestaurantSuggestion;
 use App\Enum\RestaurantSuggestionStatus;
 use App\Enum\RestaurantSuggestionType;
@@ -99,15 +100,27 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
     }
 
     #[Route('/admin/restaurant-suggestion/{id}/approve', name: 'admin_restaurant_suggestion_approve')]
-    public function approve(Request $request, RestaurantSuggestion $suggestion): Response {
+    public function approve(RestaurantSuggestion $suggestion): Response {
         $this->restaurantSuggestionService->approveSuggestion($suggestion);
+
+        if ($suggestion->getType() === RestaurantSuggestionType::NEW) {
+            $prefillDto = RestaurantPrefillDTO::fromFields($suggestion->getFields());
+
+            $url = $this->adminUrlGenerator
+                ->setController(RestaurantCrudController::class)
+                ->setAction(Action::NEW)
+                ->setAll($prefillDto->toArray())
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
 
         $this->addFlash('success', 'Suggestie goedgekeurd');
         return $this->redirect($this->adminUrlGenerator->setController(RestaurantSuggestionCrudController::class)->generateUrl());
     }
 
     #[Route('/admin/restaurant-suggestion/{id}/reject', name: 'admin_restaurant_suggestion_reject')]
-    public function reject(Request $request, RestaurantSuggestion $suggestion): Response {
+    public function reject(RestaurantSuggestion $suggestion): Response {
         $this->restaurantSuggestionService->rejectSuggestion($suggestion);
 
         $this->addFlash('warning', 'Suggestie afgewezen');
