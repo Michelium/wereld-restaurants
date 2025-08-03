@@ -1,118 +1,146 @@
 {% extends '@EasyAdmin/crud/detail.html.twig' %}
 
 {% block content_title %}
-	Suggestie voor restaurant {{ entity.getInstance().getRestaurant().name ?? 'Nieuw restaurant' }}
+    Suggestie voor restaurant {{ entity.getInstance().getRestaurant().name ?? 'Nieuw restaurant' }}
 {% endblock %}
 
 {% block main %}
-	{# @var current App\Entity\Restaurant #}
-	{% set current = entity.getInstance().getRestaurant() %}
+    {# @var current App\Entity\Restaurant #}
+    {% set current = entity.getInstance().getRestaurant() %}
 
-	{# @var suggestion App\Entity\RestaurantSuggestion #}
-	{% set suggestion = entity.getInstance() %}
-	{% set suggested = suggestion.getFields() %}
+    {# @var suggestion App\Entity\RestaurantSuggestion #}
+    {% set suggestion = entity.getInstance() %}
+    {% set suggested = suggestion.getFields() %}
 
-	{% if suggestion.type == enum('App\\Enum\\RestaurantSuggestionType').FIELDS %}
-		<div class="row mb-3">
-			<div class="col-md-8">
-				<table class="table table-hover">
-					<thead>
-					<tr>
-						<th>Veld</th>
-						<th>Huidig</th>
-						<th>Voorgesteld</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr>
-						<td>Naam</td>
-						<td>{{ current ? current.name : '—' }}</td>
-						<td class="{{ (current and current.name != suggested.name) ? 'table-warning' }}">
-							{{ suggested.name }}
-						</td>
-					</tr>
-					<tr>
-						<td>Straat</td>
-						<td>{{ current.street ?? '—' }}</td>
-						<td class="{{ (current.street != suggested.street) ? 'table-warning' }}">
-							{{ suggested.street }}
-						</td>
-					</tr>
-					<tr>
-						<td>Huisnummer</td>
-						<td>{{ current.houseNumber ?? '—' }}</td>
-						<td class="{{ (current.houseNumber != suggested.houseNumber) ? 'table-warning' }}">
-							{{ suggested.houseNumber }}
-						</td>
-					</tr>
-					<tr>
-						<td>Postcode</td>
-						<td>{{ current.postalCode ?? '—' }}</td>
-						<td class="{{ (current.postalCode != suggested.postalCode) ? 'table-warning' }}">
-							{{ suggested.postalCode }}
-						</td>
-					</tr>
-					<tr>
-						<td>Plaats</td>
-						<td>{{ current.city ?? '—' }}</td>
-						<td class="{{ (current.city != suggested.city) ? 'table-warning' }}">
-							{{ suggested.city }}
-						</td>
-					</tr>
-					<tr>
-						<td>Land</td>
-						<td>{{ current.country.name ?? '—' }}</td>
-						<td class="{{ (current.country.id != suggested.countryId) ? 'table-warning' }}">
-							{% set country = countries[suggested.countryId|default(0)] ?? null %}
-							{{ country.name ?? 'Onbekend land' }}
-						</td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	{% elseif suggestion.type == enum('App\\Enum\\RestaurantSuggestionType').CLOSED %}
-		<div class="row mb-3">
-			<div class="col-md-8">
-				<strong>De gebruiker meldt dat dit restaurant <u>gesloten</u> is.</strong>
-			</div>
-		</div>
-	{% endif %}
+    {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').CLOSED %}
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Veld</th>
+                        {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                            <th>Huidig</th>
+                        {% endif %}
+                        <th>Voorgesteld</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Naam</td>
+                        {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                            <td>{{ current ? current.name : '—' }}</td>
+                        {% endif %}
+                        <td class="{{ (current and current.name != suggested.name) ? 'table-warning' }}">
+                            {{ suggested.name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Straat</td>
+                        {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                            <td>{{ current.street ?? '—' }}</td>
+                        {% endif %}
+                        <td class="{{ (current and current.street != suggested.street) ? 'table-warning' }}">
+                            {{ suggested.street }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Huisnummer</td>
+                        {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                            <td>{{ current.houseNumber ?? '—' }}</td>
+                        {% endif %}
+                        <td class="{{ (current and current.houseNumber != suggested.houseNumber) ? 'table-warning' }}">
+                            {{ suggested.houseNumber }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Postcode</td>
+                        {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                            <td>{{ current.postalCode ?? '—' }}</td>
+                        {% endif %}
+                        <td class="{{ (current and current.postalCode != suggested.postalCode) ? 'table-warning' }}">
+                            {{ suggested.postalCode }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Plaats</td>
+                        {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                            <td>{{ current.city ?? '—' }}</td>
+                        {% endif %}
+                        <td class="{{ (current and current.city != suggested.city) ? 'table-warning' }}">
+                            {{ suggested.city }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Land</td>
+                        {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                            <td>{{ current.country.name ?? '—' }}</td>
+                        {% endif %}
+                        <td class="{{ (current and current.country.id != suggested.countryId) ? 'table-warning' }}">
+                            {% set country = countries[suggested.countryId|default(0)] ?? null %}
+                            {{ country.name ?? 'Onbekend land' }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% elseif suggestion.type == enum('App\\Enum\\RestaurantSuggestionType').CLOSED %}
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <strong>De gebruiker meldt dat dit restaurant <u>gesloten</u> is.</strong>
+            </div>
+        </div>
+    {% endif %}
 
-	{% if suggestion.comment %}
-		<div class="row">
-			<div class="col-md-8">
-				<strong>Extra opmerking invoerder</strong>
-				<p>{{ suggestion.comment }}</p>
-			</div>
-		</div>
-	{% endif %}
+    {% if suggestion.comment %}
+        <div class="row">
+            <div class="col-md-8">
+                <strong>Extra opmerking invoerder</strong>
+                <p>{{ suggestion.comment }}</p>
+            </div>
+        </div>
+    {% endif %}
 
-	<div class="row">
-		<div class="col-md-8">
-			<strong>Google Maps</strong>
-			<p class="mb-0">
-				Huidig:
-				<a href="https://www.google.com/maps/search/?api=1&query={{ current.name }} {{ current.street }} {{ current.houseNumber }}, {{ current.postalCode }} {{ current.city }}"
-				   target="_blank">
-					{{ current.street }} {{ current.houseNumber }}, {{ current.postalCode }} {{ current.city }}
-				</a>
-			</p>
-			{% if suggestion.type == 'fields' %}
-				<p>Voorgesteld:
-					<a href="https://www.google.com/maps/search/?api=1&query={{ suggested.name }} {{ suggested.street }} {{ suggested.houseNumber }}, {{ suggested.postalCode }} {{ suggested.city }}"
-					   target="_blank">
-						{{ suggested.street }} {{ suggested.houseNumber }}, {{ suggested.postalCode }} {{ suggested.city }}
-					</a>
-				</p>
-			{% endif %}
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-md-8">
+            <strong>Google Maps</strong>
+            {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                <p class="mb-0">
+                    Huidig:
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ current.name }} {{ current.street }} {{ current.houseNumber }}, {{ current.postalCode }} {{ current.city }}"
+                       target="_blank">
+                        {{ current.street }} {{ current.houseNumber }}, {{ current.postalCode }} {{ current.city }}
+                    </a>
+                </p>
+            {% endif %}
+            {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').CLOSED %}
+                <p class="mb-0">Voorgesteld:
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ suggested.name }} {{ suggested.street }} {{ suggested.houseNumber }}, {{ suggested.postalCode }} {{ suggested.city }}"
+                       target="_blank">
+                        {{ suggested.street }} {{ suggested.houseNumber }}, {{ suggested.postalCode }} {{ suggested.city }}
+                    </a>
+                </p>
+                {% if suggestion.type == enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                    <small class="text-muted">De link kan onvolledig zijn als de gebruiker niet alle velden heeft ingevuld.</small>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
 
-	<div class="mt-4 d-flex gap-3">
-		<a href="{{ path('admin_restaurant_suggestion_approve', {id: suggestion.id}) }}"
-		   class="btn btn-light">✅ &nbsp;Goedkeuren</a>
-		<a href="{{ path('admin_restaurant_suggestion_reject', {id: suggestion.id}) }}"
-		   class="btn btn-light">❌ &nbsp;Afwijzen</a>
-	</div>
+    <hr>
+
+    <div class="mt-4 d-flex flex-column gap-4">
+        <div class="d-flex align-items-start">
+            <a href="{{ path('admin_restaurant_suggestion_approve', {id: suggestion.id}) }}" class="btn btn-light me-2 flex-shrink-0 text-left" style="min-width: 120px;">✅ &nbsp;Goedkeuren</a>
+            <span class="text-muted">
+                Keurt de suggestie goed en voert de wijziging door. <br>
+                Bij een nieuw restaurant kan je de suggestie eerst aanpassen voordat je deze publiceert.
+            </span>
+        </div>
+        <div class="d-flex align-items-start">
+            <a href="{{ path('admin_restaurant_suggestion_reject', {id: suggestion.id}) }}" class="btn btn-light me-2 flex-shrink-0 text-left" style="min-width: 120px;">❌ &nbsp;Afwijzen</a>
+            <span class="text-muted">Wijst de suggestie af en negeert de wijziging.</span>
+        </div>
+    </div>
 {% endblock %}

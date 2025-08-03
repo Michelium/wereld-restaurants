@@ -11,4 +11,5 @@ export type RestaurantType = {
     houseNumber: string | null;
     postalCode: string | null;
     city: string | null;
+    website: string | null;
 }

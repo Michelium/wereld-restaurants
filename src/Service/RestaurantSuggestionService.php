@@ -22,6 +22,14 @@ readonly final class RestaurantSuggestionService {
     }
 
     public function approveSuggestion(RestaurantSuggestion $restaurantSuggestion): void {
+        if ($restaurantSuggestion->getType() === RestaurantSuggestionType::NEW) {
+            // If the restaurant doesn't exist, we don't create a restaurant, this is done after the suggestion is approved by the user.
+            $restaurantSuggestion->setStatus(RestaurantSuggestionStatus::APPROVED);
+            $this->entityManager->persist($restaurantSuggestion);
+            $this->entityManager->flush();
+            return;
+        }
+
         $restaurant = $restaurantSuggestion->isNewRestaurant()
             ? new Restaurant()
             : $restaurantSuggestion->getRestaurant();
@@ -65,8 +73,9 @@ readonly final class RestaurantSuggestionService {
         $restaurantSuggestion = new RestaurantSuggestion();
         $restaurantSuggestion->setRestaurant($restaurant);
         $restaurantSuggestion->setStatus(RestaurantSuggestionStatus::PENDING);
-        $restaurantSuggestion->setType(RestaurantSuggestionType::FIELDS);
+        $restaurantSuggestion->setType($dto->getTypeAsEnum());
         $restaurantSuggestion->setComment($dto->comment);
+        $restaurantSuggestion->setNewRestaurant($dto->newRestaurant);
         $restaurantSuggestion->setFields([
             'name' => $dto->fields->name,
             'street' => $dto->fields->street,
