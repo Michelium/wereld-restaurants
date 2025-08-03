@@ -6,7 +6,7 @@ const RestaurantFilterPanel = () => {
     const [showNewRestaurantModal, setShowNewRestaurantModal] = useState(false);
 
     return (
-        <Stack spacing={1}>
+        <Stack spacing={2}>
             <NewRestaurantModal
                 onClose={() => setShowNewRestaurantModal(false)}
                 open={showNewRestaurantModal}
