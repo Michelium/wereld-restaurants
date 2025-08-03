@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -22,7 +23,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class RestaurantCrudController extends AbstractCrudController {
@@ -32,6 +35,7 @@ class RestaurantCrudController extends AbstractCrudController {
         private readonly RequestStack      $requestStack,
         private readonly CountryRepository $countryRepository,
         private readonly GeocodingService  $geocodingService,
+        private readonly AdminUrlGenerator $adminUrlGenerator,
     ) {
     }
 
@@ -179,5 +183,21 @@ class RestaurantCrudController extends AbstractCrudController {
 
         $entityManager->persist($entityInstance);
         $entityManager->flush();
+    }
+
+    protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse {
+        // After creating, redirect to the edit page for the new restaurant
+        $restaurant = $context->getEntity()->getInstance();
+        if ($action === Crud::PAGE_NEW && $restaurant instanceof Restaurant) {
+            $url = $this->adminUrlGenerator
+                ->setController(self::class)
+                ->setAction(Crud::PAGE_EDIT)
+                ->setEntityId($restaurant->getId())
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::getRedirectResponseAfterSave($context, $action);
     }
 }
