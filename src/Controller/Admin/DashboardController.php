@@ -3,8 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Restaurant;
-use App\Entity\User;
 use App\Entity\RestaurantSuggestion;
+use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -18,7 +18,7 @@ class DashboardController extends AbstractDashboardController {
 
     public function index(): Response {
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        return $this->redirect($adminUrlGenerator->setController(RestaurantCrudController::class)->generateUrl());
+        return $this->redirect($adminUrlGenerator->setController(RestaurantSuggestionCrudController::class)->generateUrl());
     }
 
     public function configureCrud(): Crud {

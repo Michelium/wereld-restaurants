@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\DTO\RestaurantPrefillDTO;
 use App\Entity\RestaurantSuggestion;
 use App\Enum\RestaurantSuggestionStatus;
 use App\Enum\RestaurantSuggestionType;
@@ -20,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,6 +70,8 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
         } else {
             yield IdField::new('id');
             yield AssociationField::new('restaurant');
+            yield TextField::new('fields[name]')
+                ->setLabel('(Voorgestelde) naam');
             yield ChoiceField::new('status')
                 ->setChoices(RestaurantSuggestionStatus::cases())
                 ->renderAsBadges([
@@ -81,6 +85,7 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
                 ->renderAsBadges([
                     RestaurantSuggestionType::FIELDS->value => 'info',
                     RestaurantSuggestionType::CLOSED->value => 'secondary',
+                    RestaurantSuggestionType::NEW->value => 'success',
                 ]);
             yield DateTimeField::new('createdAt')
                 ->setFormat('dd-MM-yyyy HH:mm')
@@ -95,15 +100,27 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
     }
 
     #[Route('/admin/restaurant-suggestion/{id}/approve', name: 'admin_restaurant_suggestion_approve')]
-    public function approve(Request $request, RestaurantSuggestion $suggestion): Response {
+    public function approve(RestaurantSuggestion $suggestion): Response {
         $this->restaurantSuggestionService->approveSuggestion($suggestion);
+
+        if ($suggestion->getType() === RestaurantSuggestionType::NEW) {
+            $prefillDto = RestaurantPrefillDTO::fromFields($suggestion->getFields());
+
+            $url = $this->adminUrlGenerator
+                ->setController(RestaurantCrudController::class)
+                ->setAction(Action::NEW)
+                ->setAll($prefillDto->toArray())
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
 
         $this->addFlash('success', 'Suggestie goedgekeurd');
         return $this->redirect($this->adminUrlGenerator->setController(RestaurantSuggestionCrudController::class)->generateUrl());
     }
 
     #[Route('/admin/restaurant-suggestion/{id}/reject', name: 'admin_restaurant_suggestion_reject')]
-    public function reject(Request $request, RestaurantSuggestion $suggestion): Response {
+    public function reject(RestaurantSuggestion $suggestion): Response {
         $this->restaurantSuggestionService->rejectSuggestion($suggestion);
 
         $this->addFlash('warning', 'Suggestie afgewezen');

@@ -5,6 +5,7 @@ import '../../../styles/pages/Restaurants.scss';
 import {MapContext} from "../providers/MapContextProvider";
 import RestaurantInfoPanel from "../components/RestaurantInfoPanel";
 import ZoomPrompt from "../components/ZoomPrompt";
+import NewRestaurantPanel from "../components/NewRestaurantPanel";
 
 const Restaurants = () => {
     const {mapState} = useContext(MapContext);
@@ -23,6 +24,9 @@ const Restaurants = () => {
                 {mapState.shouldShowZoomPrompt && <ZoomPrompt/>}
 
                 <RestaurantMap/>
+            </div>
+            <div className="restaurants-map-wrapper__overlay restaurants-map-wrapper__overlay--new-restaurant">
+                <NewRestaurantPanel/>
             </div>
         </div>
     );

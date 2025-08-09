@@ -35,7 +35,7 @@ jobs:
             -   name: Add SSH host key to known_hosts
                 run: |
                     mkdir -p ~/.ssh
-                    ssh-keyscan da07.qabana.nl >> ~/.ssh/known_hosts
+                    ssh-keyscan -p 2584 da07.qabana.nl >> ~/.ssh/known_hosts
 
             -   name: Deploy
                 run: dep deploy ${{ github.ref_name }}

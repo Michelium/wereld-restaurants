@@ -1,26 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import {
-    Button, Divider, FormLabel, Input, Stack,
-    Textarea, Typography
-} from '@mui/joy';
-import { RestaurantType } from '../types/RestaurantType';
+import React, {useEffect, useState} from 'react';
+import {Button, FormLabel, Input, Stack, Textarea, Typography} from '@mui/joy';
+import {RestaurantType} from '../types/RestaurantType';
 import CountrySelect from './CountrySelect';
-import { CountryType } from '../types/CountryType';
+import {CountryType} from '../types/CountryType';
 import toast from 'react-hot-toast';
 
 interface RestaurantSuggestionFormProps {
-    restaurant: RestaurantType;
+    restaurant: RestaurantType | null;
     onClose: () => void;
 }
 
-const RestaurantSuggestionForm = ({ restaurant, onClose }: RestaurantSuggestionFormProps) => {
+const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFormProps) => {
     const [submitting, setSubmitting] = useState(false);
+
+    // Determine if we are in edit mode (restaurant exists) or new suggestion mode
+    const [editMode, setEditMode] = useState<boolean>();
 
     const [name, setName] = useState(restaurant?.name || '');
     const [street, setStreet] = useState(restaurant?.street || '');
     const [houseNumber, setHouseNumber] = useState(restaurant?.houseNumber || '');
     const [postalCode, setPostalCode] = useState(restaurant?.postalCode || '');
     const [city, setCity] = useState(restaurant?.city || '');
+    const [country, setCountry] = useState<CountryType | null>(restaurant?.country || null);
     const [countryId, setCountryId] = useState<number | null>(restaurant?.country?.id ?? null);
     const [comment, setComment] = useState('');
 
@@ -30,9 +31,14 @@ const RestaurantSuggestionForm = ({ restaurant, onClose }: RestaurantSuggestionF
         setHouseNumber(restaurant?.houseNumber || '');
         setPostalCode(restaurant?.postalCode || '');
         setCity(restaurant?.city || '');
+        setCountry(restaurant?.country || null);
         setCountryId(restaurant?.country?.id ?? null);
         setComment('');
         setSubmitting(false);
+    }, [restaurant]);
+
+    useEffect(() => {
+        setEditMode(restaurant !== null);
     }, [restaurant]);
 
     const handleSubmit = async () => {
@@ -58,7 +64,8 @@ const RestaurantSuggestionForm = ({ restaurant, onClose }: RestaurantSuggestionF
                 body: JSON.stringify({
                     restaurantId: restaurant?.id ?? null,
                     comment,
-                    newRestaurant: false,
+                    newRestaurant: !editMode,
+                    type: !editMode ? 'new' : 'form',
                     fields
                 })
             });
@@ -82,19 +89,10 @@ const RestaurantSuggestionForm = ({ restaurant, onClose }: RestaurantSuggestionF
 
     return (
         <>
-            <Typography level="h4">Verbetering voorstellen</Typography>
-            <Typography level="body-md" sx={{ mb: 1 }}>
-                Vul de onderstaande gegevens in om een verbetering voor te stellen voor dit restaurant.
-                Je kunt bestaande gegevens aanpassen of nieuwe gegevens toevoegen.
-                Deze suggestie wordt beoordeeld door onze beheerders.
-            </Typography>
-
-            <Divider />
-
             <Stack spacing={1.5} mt={2}>
                 <Typography level="body-sm">Algemene gegevens</Typography>
 
-                <FormLabel htmlFor="restaurant-name">Naam:</FormLabel>
+                <FormLabel htmlFor="restaurant-name" required>Naam:</FormLabel>
                 <Input
                     id="restaurant-name"
                     placeholder="Naam van het restaurant"
@@ -102,11 +100,12 @@ const RestaurantSuggestionForm = ({ restaurant, onClose }: RestaurantSuggestionF
                     onChange={(e) => setName(e.target.value)}
                 />
 
-                <FormLabel htmlFor="restaurant-country">Land van de keuken:</FormLabel>
+                <FormLabel htmlFor="restaurant-country" required>Land van de keuken:</FormLabel>
                 <CountrySelect
-                    value={restaurant.country || null}
+                    value={country}
                     onChange={(selected) => {
                         const selectedCountry = selected as CountryType;
+                        setCountry(selectedCountry);
                         setCountryId(selectedCountry?.id ?? null);
                     }}
                     id="restaurant-country"
@@ -116,6 +115,12 @@ const RestaurantSuggestionForm = ({ restaurant, onClose }: RestaurantSuggestionF
 
             <Stack spacing={1.5} mt={2}>
                 <Typography level="body-sm">Adresgegevens</Typography>
+
+                {!editMode && (
+                    <Typography level="body-sm" textColor="text.secondary">
+                        Vul zo veel mogelijk adresgegevens in. Dit helpt ons om het restaurant te vinden. De plaatsnaam is verplicht.
+                    </Typography>
+                )}
 
                 <FormLabel htmlFor="restaurant-street">Straat:</FormLabel>
                 <Input
@@ -141,7 +146,7 @@ const RestaurantSuggestionForm = ({ restaurant, onClose }: RestaurantSuggestionF
                     onChange={(e) => setPostalCode(e.target.value)}
                 />
 
-                <FormLabel htmlFor="restaurant-city">Plaats:</FormLabel>
+                <FormLabel htmlFor="restaurant-city" required>Plaats:</FormLabel>
                 <Input
                     id="restaurant-city"
                     placeholder="Plaats"
@@ -170,7 +175,7 @@ const RestaurantSuggestionForm = ({ restaurant, onClose }: RestaurantSuggestionF
                     variant="solid"
                     onClick={handleSubmit}
                     loading={submitting}
-                    disabled={!name || submitting}
+                    disabled={!name || !country || !city || submitting}
                 >
                     Versturen
                 </Button>

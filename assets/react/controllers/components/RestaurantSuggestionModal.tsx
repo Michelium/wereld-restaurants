@@ -53,12 +53,21 @@ const RestaurantSuggestionModal = ({restaurant, onClose, open}: RestaurantSugges
                     maxHeight: '90vh',
                     overflowY: 'auto',
                     overflowX: 'hidden',
-                    // paddingRight: '8px',
                 }}
             >
                 <ModalClose/>
                 {step === 'form' ? (
-                    <RestaurantSuggestionForm restaurant={restaurant} onClose={onClose}/>
+                    <>
+                        <Typography level="h4">Verbetering voorstellen</Typography>
+                        <Typography level="body-md" sx={{mb: 1}}>
+                            Vul de onderstaande gegevens in om een verbetering voor te stellen voor dit restaurant.
+                            Je kunt bestaande gegevens aanpassen of nieuwe gegevens toevoegen.
+                            Deze suggestie wordt beoordeeld door onze beheerders.
+                        </Typography>
+
+                        <Divider/>
+                        <RestaurantSuggestionForm restaurant={restaurant} onClose={onClose}/>
+                    </>
                 ) : (
                     <>
                         <Typography level="h4">Melding maken</Typography>
