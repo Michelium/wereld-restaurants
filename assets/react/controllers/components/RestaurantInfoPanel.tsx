@@ -82,6 +82,26 @@ const RestaurantInfoPanel = () => {
 
                 <Divider sx={{my: 2}}/>
 
+                {restaurant.website && (
+                    <>
+                        <Typography level="body-sm" textColor="text.secondary">
+                            Website
+                        </Typography>
+                        <Button
+                            component="a"
+                            href={restaurant.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            variant="soft"
+                            size="sm"
+                            sx={{alignSelf: 'flex-start'}}
+                        >
+                            Website
+                        </Button>
+                        <Divider sx={{my: 2}}/>
+                    </>
+                )}
+
                 <RestaurantSuggestionModal
                     restaurant={restaurant}
                     open={showSuggestionModal}
