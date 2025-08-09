@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Divider, Modal, ModalClose, ModalDialog, Stack, Typography} from '@mui/joy';
-import {RestaurantType} from "../types/RestaurantType";
+import {RestaurantType} from "../../types/RestaurantType";
 import toast from "react-hot-toast";
-import RestaurantSuggestionForm from "./RestaurantSuggestionForm";
+import RestaurantSuggestionForm from "../Forms/RestaurantSuggestionForm";
 
 interface RestaurantSuggestionModalProps {
     restaurant: RestaurantType | null;

@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "react";
 import {useMap} from "react-leaflet";
-import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
-import {CountryType} from "../types/CountryType";
+import {MapContext, MapStateRepository} from "../../providers/MapContextProvider";
+import {CountryType} from "../../types/CountryType";
 
 const MapEffect = () => {
     const {mapState, setMapState} = useContext(MapContext);

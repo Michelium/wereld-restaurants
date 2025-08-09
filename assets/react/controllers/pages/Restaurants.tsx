@@ -1,11 +1,11 @@
 import React, {useContext} from 'react';
-import RestaurantMap from "../components/RestaurantMap";
-import RestaurantFilterPanel from "../components/RestaurantFilterPanel";
+import RestaurantMap from "../components/Map/RestaurantMap";
+import RestaurantFilterPanel from "../components/Panels/RestaurantFilterPanel";
 import '../../../styles/pages/Restaurants.scss';
 import {MapContext} from "../providers/MapContextProvider";
-import RestaurantInfoPanel from "../components/RestaurantInfoPanel";
-import ZoomPrompt from "../components/ZoomPrompt";
-import NewRestaurantPanel from "../components/NewRestaurantPanel";
+import RestaurantInfoPanel from "../components/Panels/RestaurantInfoPanel";
+import ZoomPrompt from "../components/Map/ZoomPrompt";
+import NewRestaurantPanel from "../components/Panels/NewRestaurantPanel";
 
 const Restaurants = () => {
     const {mapState} = useContext(MapContext);

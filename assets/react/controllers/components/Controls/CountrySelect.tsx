@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Select from 'react-select';
-import {CountryType} from '../types/CountryType';
-import {getCountryIconUrl} from '../utils/getCountryIcon';
+import {CountryType} from '../../types/CountryType';
+import {getCountryIconUrl} from '../../utils/getCountryIcon';
 
 interface CountrySelectProps {
     isMulti?: boolean;
