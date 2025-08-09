@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
-import {CountryType} from '../types/CountryType';
-import {MapContext, MapStateRepository} from '../providers/MapContextProvider';
-import CountrySelect from './CountrySelect';
+import {CountryType} from '../../types/CountryType';
+import {MapContext, MapStateRepository} from '../../providers/MapContextProvider';
+import CountrySelect from '../Controls/CountrySelect';
 import {Stack, Typography} from '@mui/joy';
 
 const RestaurantFilterPanel = () => {

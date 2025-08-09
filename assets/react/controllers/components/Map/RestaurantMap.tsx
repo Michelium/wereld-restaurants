@@ -2,8 +2,8 @@ import React, {useContext} from 'react';
 import {MapContainer, Marker, TileLayer} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import MarkerClusterGroup from "react-leaflet-cluster";
-import {getCountryIcon} from "../utils/getCountryIcon";
-import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
+import {getCountryIcon} from "../../utils/getCountryIcon";
+import {MapContext, MapStateRepository} from "../../providers/MapContextProvider";
 import MapEffect from "./MapEffect";
 
 const RestaurantMap = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Divider, Modal, ModalClose, ModalDialog, Typography} from '@mui/joy';
-import RestaurantSuggestionForm from "./RestaurantSuggestionForm";
+import RestaurantSuggestionForm from "../Forms/RestaurantSuggestionForm";
 
 interface RestaurantSuggestionModalProps {
     onClose: () => void;

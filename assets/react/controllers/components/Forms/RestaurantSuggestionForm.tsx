@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Button, FormLabel, Input, Stack, Textarea, Typography} from '@mui/joy';
-import {RestaurantType} from '../types/RestaurantType';
-import CountrySelect from './CountrySelect';
-import {CountryType} from '../types/CountryType';
+import {RestaurantType} from '../../types/RestaurantType';
+import CountrySelect from '../Controls/CountrySelect';
+import {CountryType} from '../../types/CountryType';
 import toast from 'react-hot-toast';
 
 interface RestaurantSuggestionFormProps {

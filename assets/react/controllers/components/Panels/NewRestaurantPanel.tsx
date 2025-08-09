@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Stack, Typography} from '@mui/joy';
-import NewRestaurantModal from "./NewRestaurantModal";
+import NewRestaurantModal from "../Modals/NewRestaurantModal";
 
 const RestaurantFilterPanel = () => {
     const [showNewRestaurantModal, setShowNewRestaurantModal] = useState(false);

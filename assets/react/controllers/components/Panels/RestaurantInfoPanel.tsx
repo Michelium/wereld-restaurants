@@ -2,9 +2,9 @@ import React, {useContext, useState} from 'react';
 import {Button, Divider, IconButton, Stack, Typography} from '@mui/joy';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
-import {MapContext, MapStateRepository} from "../providers/MapContextProvider";
-import {getCountryIconUrl} from "../utils/getCountryIcon";
-import RestaurantSuggestionModal from "./RestaurantSuggestionModal";
+import {MapContext, MapStateRepository} from "../../providers/MapContextProvider";
+import {getCountryIconUrl} from "../../utils/getCountryIcon";
+import RestaurantSuggestionModal from "../Modals/RestaurantSuggestionModal";
 
 const RestaurantInfoPanel = () => {
     const {mapState, setMapState} = useContext(MapContext);
@@ -81,6 +81,30 @@ const RestaurantInfoPanel = () => {
                 )}
 
                 <Divider sx={{my: 2}}/>
+
+                {restaurant.website && (
+                    <>
+                        <Typography level="body-sm" textColor="text.secondary">
+                            Website
+                        </Typography>
+                        <Typography level="body-sm" sx={{alignSelf: 'flex-start'}}>
+                            <a
+                                href={restaurant.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{color: 'inherit', textDecoration: 'underline'}}
+                            >
+                                {restaurant.website}
+                            </a>
+                        </Typography>
+                        {/*Add warning that these links are not verified by us*/}
+                        <Typography level="body-xs" textColor="text.tertiary" sx={{mt: 0.5}}>
+                            Deze links worden niet individueel door ons gecontroleerd.
+                            We raden aan om voorzichtig te zijn met het bezoeken van externe websites.
+                        </Typography>
+                        <Divider sx={{my: 2}}/>
+                    </>
+                )}
 
                 <RestaurantSuggestionModal
                     restaurant={restaurant}
