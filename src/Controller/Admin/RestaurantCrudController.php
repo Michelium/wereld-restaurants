@@ -46,10 +46,10 @@ class RestaurantCrudController extends AbstractCrudController {
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder {
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
-        $qb->addSelect('country')
-            ->leftJoin('entity.country', 'country')
-            ->orderBy('CASE WHEN country.name IS NULL THEN 1 ELSE 0 END') // Null values last
-            ->addOrderBy('country.name', 'ASC')
+        $qb->addSelect('c')
+            ->leftJoin('entity.country', 'c')
+            ->orderBy('CASE WHEN c.name IS NULL THEN 1 ELSE 0 END')
+            ->addOrderBy('c.name', 'ASC')
             ->addOrderBy('entity.name', 'ASC');
 
         return $qb;
