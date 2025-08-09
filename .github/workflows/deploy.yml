@@ -37,5 +37,8 @@ jobs:
                     mkdir -p ~/.ssh
                     ssh-keyscan -p 2584 da07.qabana.nl >> ~/.ssh/known_hosts
 
+            -   name: Test SSH connection
+                run: ssh -o StrictHostKeyChecking=yes -p 2584 michelh@da07.qabana.nl 'echo OK'
+
             -   name: Deploy
                 run: dep deploy ${{ github.ref_name }}
