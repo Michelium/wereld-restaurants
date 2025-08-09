@@ -99,6 +99,12 @@ class RestaurantCrudController extends AbstractCrudController {
             ->setColumns('col-md-8')
             ->setLabel('Plaats');
 
+        yield FormField::addFieldset('Contactinformatie');
+        yield TextField::new('website')
+            ->setColumns('col-md-8')
+            ->setLabel('Website')
+            ->setHelp('Vul de volledige URL in, inclusief https://. Bijvoorbeeld: https://www.example.com');
+
         yield FormField::addColumn(4);
         yield FormField::addFieldset('Instellingen');
         yield ChoiceField::new('status')
