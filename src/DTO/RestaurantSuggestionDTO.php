@@ -13,6 +13,8 @@ class RestaurantSuggestionDTO {
 
     public ?bool $newRestaurant = false;
 
+    public ?string $botField = null;
+
     #[Assert\Choice(choices: ['fields', 'closed', 'new'], message: 'Invalid suggestion type.')]
     public ?string $type = null;
 

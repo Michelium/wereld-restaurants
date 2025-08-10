@@ -16,6 +16,8 @@ const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFor
     // Determine if we are in edit mode (restaurant exists) or new suggestion mode
     const [editMode, setEditMode] = useState<boolean>();
 
+    const [formRenderedAt] = useState(Date.now());
+    const [botField, setBotField] = useState('');
     const [name, setName] = useState(restaurant?.name || '');
     const [street, setStreet] = useState(restaurant?.street || '');
     const [houseNumber, setHouseNumber] = useState(restaurant?.houseNumber || '');
@@ -44,6 +46,9 @@ const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFor
     }, [restaurant]);
 
     const handleSubmit = async () => {
+        // Prevent submission if the form was rendered too quickly to avoid spam
+        if (Date.now() - formRenderedAt < 800) return;
+
         if (!name) return;
 
         setSubmitting(true);
@@ -68,8 +73,9 @@ const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFor
                     restaurantId: restaurant?.id ?? null,
                     comment,
                     newRestaurant: !editMode,
-                    type: !editMode ? 'new' : 'form',
-                    fields
+                    type: !editMode ? 'new' : 'fields',
+                    fields,
+                    botField
                 })
             });
 
@@ -181,6 +187,23 @@ const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFor
                     onChange={(e) => setComment(e.target.value)}
                 />
             </Stack>
+
+            <Input
+                type="text"
+                value={botField}
+                onChange={(e) => setBotField(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                style={{
+                    position: 'absolute',
+                    left: '-9999px',
+                    height: 0,
+                    width: 0,
+                    opacity: 0
+                }}
+                aria-hidden="true"
+                id="phone"
+            />
 
             <Stack direction="row" spacing={1} justifyContent="flex-end" mt={3}>
                 <Button variant="plain" onClick={onClose}>

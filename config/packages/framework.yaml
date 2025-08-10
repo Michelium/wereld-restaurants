@@ -15,6 +15,18 @@ framework:
             policy: 'token_bucket'
             limit: 600
             rate: { amount: 600, interval: '10 minutes' }
+        edits_per_session:
+            policy: token_bucket
+            limit: 30
+            rate: { interval: '10 minutes', amount: 30 }
+        edits_per_ip:
+            policy: sliding_window
+            limit: 120
+            interval: '1 hour'
+        edits_per_restaurant:
+            policy: sliding_window
+            limit: 3
+            interval: '24 hours'
 
     #esi: true
     #fragments: true
