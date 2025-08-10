@@ -41,6 +41,7 @@ readonly final class RestaurantSuggestionService {
                 $restaurant->setHouseNumber($restaurantSuggestion->getFields()['houseNumber'] ?? $restaurant->getHouseNumber());
                 $restaurant->setPostalCode($restaurantSuggestion->getFields()['postalCode'] ?? $restaurant->getPostalCode());
                 $restaurant->setCity($restaurantSuggestion->getFields()['city'] ?? $restaurant->getCity());
+                $restaurant->setWebsite($restaurantSuggestion->getFields()['website'] ?? $restaurant->getWebsite());
                 $restaurant->setCountry($restaurantSuggestion->getFields()['countryId'] ? $this->countryRepository->find($restaurantSuggestion->getFields()['countryId']) : null);
 
                 break;
@@ -83,6 +84,7 @@ readonly final class RestaurantSuggestionService {
             'postalCode' => $dto->fields->postalCode,
             'city' => $dto->fields->city,
             'countryId' => $country?->getId(),
+            'website' => $dto->fields->website,
         ]);
 
         return $restaurantSuggestion;

@@ -22,6 +22,9 @@ class RestaurantEditDTO {
     #[Assert\Length(max: 255)]
     public ?string $city = null;
 
+    #[Assert\Length(max: 255)]
+    public ?string $website = null;
+
     #[Assert\NotBlank]
     #[Assert\Type("int")]
     public ?int $countryId = null;

@@ -97,11 +97,6 @@ const RestaurantInfoPanel = () => {
                                 {restaurant.website}
                             </a>
                         </Typography>
-                        {/*Add warning that these links are not verified by us*/}
-                        <Typography level="body-xs" textColor="text.tertiary" sx={{mt: 0.5}}>
-                            Deze links worden niet individueel door ons gecontroleerd.
-                            We raden aan om voorzichtig te zijn met het bezoeken van externe websites.
-                        </Typography>
                         <Divider sx={{my: 2}}/>
                     </>
                 )}

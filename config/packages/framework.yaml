@@ -2,8 +2,35 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
-    # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        cookie_secure: auto
+        cookie_samesite: lax
+
+    rate_limiter:
+        api_per_ip:
+            policy: 'sliding_window'
+            limit: 120
+            interval: '1 minute'
+        api_per_session:
+            policy: 'token_bucket'
+            limit: 600
+            rate: { amount: 600, interval: '10 minutes' }
+        edits_per_session:
+            policy: token_bucket
+            limit: 30
+            rate: { interval: '10 minutes', amount: 30 }
+        edits_per_ip:
+            policy: sliding_window
+            limit: 120
+            interval: '1 hour'
+        edits_per_restaurant:
+            policy: sliding_window
+            limit: 3
+            interval: '24 hours'
+
+    assets:
+        version_strategy: 'Pentatrion\ViteBundle\Asset\ViteAssetVersionStrategy'
+
 
     #esi: true
     #fragments: true

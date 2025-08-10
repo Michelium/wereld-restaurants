@@ -40,6 +40,10 @@ class RestaurantSuggestionController extends AbstractController {
             return $this->json(['errors' => (string)$errors], 400);
         }
 
+        if ($dto->botField) {
+            return $this->json(['error' => 'Bot field detected, request ignored.'], 400);
+        }
+
         $restaurantSuggestion = $dto->getTypeAsEnum() === RestaurantSuggestionType::CLOSED
             ? $this->restaurantSuggestionService->createCloseSuggestion($dto)
             : $this->restaurantSuggestionService->createFromDTO($dto);

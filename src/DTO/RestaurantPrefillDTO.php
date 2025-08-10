@@ -14,6 +14,7 @@ class RestaurantPrefillDTO {
     public ?string $postalCode = null;
     public ?string $city = null;
     public ?int $countryId = null;
+    public ?string $website = null;
 
     /**
      * Create from request query params
@@ -29,6 +30,7 @@ class RestaurantPrefillDTO {
         $dto->city = $request->query->get('city');
         $countryId = $request->query->get('countryId');
         $dto->countryId = $countryId !== null ? (int)$countryId : null;
+        $dto->website = $request->query->get('website');
 
         return $dto;
     }
@@ -46,6 +48,7 @@ class RestaurantPrefillDTO {
         $dto->postalCode = $fields['postalCode'] ?? null;
         $dto->city = $fields['city'] ?? null;
         $dto->countryId = isset($fields['countryId']) ? (int)$fields['countryId'] : null;
+        $dto->website = $fields['website'] ?? null;
 
         return $dto;
     }
@@ -64,6 +67,7 @@ class RestaurantPrefillDTO {
             'postalCode' => $this->postalCode,
             'city' => $this->city,
             'countryId' => $this->countryId,
+            'website' => $this->website,
         ];
     }
 
@@ -79,6 +83,7 @@ class RestaurantPrefillDTO {
         $restaurant->setHouseNumber($this->houseNumber);
         $restaurant->setPostalCode($this->postalCode);
         $restaurant->setCity($this->city);
+        $restaurant->setWebsite($this->website);
 
         if ($this->countryId) {
             $country = $countryRepository->find($this->countryId);
@@ -93,6 +98,6 @@ class RestaurantPrefillDTO {
      * @return bool
      */
     public function hasAnyValue(): bool {
-        return $this->name || $this->street || $this->houseNumber || $this->postalCode || $this->city || $this->countryId;
+        return $this->name || $this->street || $this->houseNumber || $this->postalCode || $this->city || $this->countryId || $this->website;
     }
 }
