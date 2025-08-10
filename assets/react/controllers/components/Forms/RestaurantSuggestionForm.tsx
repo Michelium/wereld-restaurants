@@ -21,6 +21,7 @@ const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFor
     const [houseNumber, setHouseNumber] = useState(restaurant?.houseNumber || '');
     const [postalCode, setPostalCode] = useState(restaurant?.postalCode || '');
     const [city, setCity] = useState(restaurant?.city || '');
+    const [website, setWebsite] = useState(restaurant?.website || '');
     const [country, setCountry] = useState<CountryType | null>(restaurant?.country || null);
     const [countryId, setCountryId] = useState<number | null>(restaurant?.country?.id ?? null);
     const [comment, setComment] = useState('');
@@ -31,6 +32,7 @@ const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFor
         setHouseNumber(restaurant?.houseNumber || '');
         setPostalCode(restaurant?.postalCode || '');
         setCity(restaurant?.city || '');
+        setWebsite(restaurant?.website || '');
         setCountry(restaurant?.country || null);
         setCountryId(restaurant?.country?.id ?? null);
         setComment('');
@@ -52,7 +54,8 @@ const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFor
             street,
             houseNumber,
             postalCode,
-            city
+            city,
+            website
         };
 
         try {
@@ -152,6 +155,18 @@ const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFor
                     placeholder="Plaats"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
+                />
+            </Stack>
+
+            <Stack spacing={1.5} mt={2}>
+                <Typography level="body-sm">Contactgegevens</Typography>
+
+                <FormLabel htmlFor="restaurant-street">Website / social media:</FormLabel>
+                <Input
+                    id="restaurant-website"
+                    placeholder="Website of social media link"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
                 />
             </Stack>
 
