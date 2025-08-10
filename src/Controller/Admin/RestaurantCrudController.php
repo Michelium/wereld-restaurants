@@ -208,7 +208,7 @@ class RestaurantCrudController extends AbstractCrudController {
         }
 
         $name = $country->getName();
-        $flagUrl = $this->assets->getUrl("build/images/flags/{$country->getFlag()}");
+        $flagUrl = $this->assets->getUrl("assets/images/flags/{$country->getFlag()}");
 
         return sprintf(
             '<img src="%s" alt="%s" style="width: 20px; height: 14px; border: 1px solid #ccc; margin-right: 5px;" />%s',

@@ -28,6 +28,10 @@ framework:
             limit: 3
             interval: '24 hours'
 
+    assets:
+        version_strategy: 'Pentatrion\ViteBundle\Asset\ViteAssetVersionStrategy'
+
+
     #esi: true
     #fragments: true
 

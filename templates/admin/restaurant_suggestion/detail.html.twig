@@ -83,11 +83,31 @@
                     <tr>
                         <td>Land</td>
                         {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
-                            <td>{{ current.country.name ?? '—' }}</td>
+                            <td>
+                                {% if current.country %}
+                                    <img
+                                        src="{{ asset('assets/images/flags/' ~ current.country.flag) }}"
+                                        alt="{{ current.country.name }}"
+                                        style="width: 20px; height: auto; margin-right: 5px;"
+                                    >
+                                    {{ current.country.name }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
                         {% endif %}
                         <td class="{{ (current and current.country.id != suggested.countryId) ? 'table-warning' }}">
                             {% set country = countries[suggested.countryId|default(0)] ?? null %}
-                            {{ country.name ?? 'Onbekend land' }}
+                            {% if country %}
+                                <img
+                                    src="{{ asset('assets/images/flags/' ~ country.flag) }}"
+                                    alt="{{ country.name }}"
+                                    style="width: 20px; height: auto; margin-right: 5px;"
+                                >
+                                {{ country.name }}
+                            {% else %}
+                                Onbekend land
+                            {% endif %}
                         </td>
                     </tr>
                     </tbody>
