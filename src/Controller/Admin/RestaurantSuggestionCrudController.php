@@ -6,14 +6,15 @@ use App\DTO\RestaurantPrefillDTO;
 use App\Entity\RestaurantSuggestion;
 use App\Enum\RestaurantSuggestionStatus;
 use App\Enum\RestaurantSuggestionType;
+use App\Repository\CountryRepository;
 use App\Service\RestaurantSuggestionService;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -23,14 +24,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class RestaurantSuggestionCrudController extends AbstractCrudController {
     public function __construct(
-        private readonly AdminUrlGenerator      $adminUrlGenerator,
-        private readonly RestaurantSuggestionService $restaurantSuggestionService
+        private readonly AdminUrlGenerator           $adminUrlGenerator,
+        private readonly RestaurantSuggestionService $restaurantSuggestionService,
+        private readonly CountryRepository           $countryRepository
     ) {
     }
 
@@ -127,4 +128,16 @@ class RestaurantSuggestionCrudController extends AbstractCrudController {
         return $this->redirect($this->adminUrlGenerator->setController(RestaurantSuggestionCrudController::class)->generateUrl());
     }
 
+    public function configureResponseParameters(KeyValueStore $responseParameters): KeyValueStore {
+        $params = parent::configureResponseParameters($responseParameters);
+
+        // Only needed on detail page, but cheap enough either way
+        $countriesById = [];
+        foreach ($this->countryRepository->findAll() as $c) {
+            $countriesById[$c->getId()] = $c;
+        }
+
+        $params->set('countries', $countriesById);
+        return $params;
+    }
 }
