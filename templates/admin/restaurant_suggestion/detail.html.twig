@@ -72,6 +72,15 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Website</td>
+                        {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
+                            <td>{{ current.website ?? '—' }}</td>
+                        {% endif %}
+                        <td class="{{ (current and current.website != suggested.website) ? 'table-warning' }}">
+                            {{ suggested.website ? ('<a href="' ~ suggested.website ~ '" target="_blank">' ~ suggested.website ~ '</a>')|raw : '—' | raw }}
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Land</td>
                         {% if suggestion.type != enum('App\\Enum\\RestaurantSuggestionType').NEW %}
                             <td>{{ current.country.name ?? '—' }}</td>
