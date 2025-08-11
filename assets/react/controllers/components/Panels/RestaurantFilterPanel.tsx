@@ -1,32 +1,13 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {CountryType} from '../../types/CountryType';
-import {MapContext, MapStateRepository} from '../../providers/MapContextProvider';
-import CountrySelect from '../Controls/CountrySelect';
-import {Stack, Typography} from '@mui/joy';
+import {useMediaQuery} from '@mui/material';
+import DesktopFilterPanel from "./Filters/DesktopFilterPanel";
+import MobileFilterButton from "./Filters/MobileFilterButton";
 
 const RestaurantFilterPanel = () => {
-    const {mapState, setMapState} = useContext(MapContext);
+    const isDesktop = useMediaQuery('(min-width: 768px)');
 
-    return (
-        <Stack spacing={1}>
-            <Typography level="body-md" fontWeight="lg">
-                Filter op land
-            </Typography>
-
-            <CountrySelect
-                isMulti
-                disabled={mapState.loading}
-                value={mapState.filters.countries}
-                onChange={(selected) => {
-                    setMapState(
-                        MapStateRepository.updaters.setFilterCountries(selected as CountryType[])
-                    );
-                }}
-                placeholder="Selecteer landen..."
-                showRestaurantCount
-            />
-        </Stack>
-    );
+    return isDesktop ? <DesktopFilterPanel/> : <MobileFilterButton/>;
 };
 
 export default RestaurantFilterPanel;
