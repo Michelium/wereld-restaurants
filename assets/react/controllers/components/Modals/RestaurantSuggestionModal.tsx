@@ -53,6 +53,7 @@ const RestaurantSuggestionModal = ({restaurant, onClose, open}: RestaurantSugges
                     maxHeight: '90vh',
                     overflowY: 'auto',
                     overflowX: 'hidden',
+                    width: {xs: '95vw', sm: 'auto'},
                 }}
             >
                 <ModalClose/>

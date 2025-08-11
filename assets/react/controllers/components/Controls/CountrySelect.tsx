@@ -38,6 +38,7 @@ const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select 
             classNamePrefix="country-select"
             placeholder={placeholder}
             menuPortalTarget={document.body}
+            menuPosition="fixed"
             isDisabled={disabled}
             id={id}
             styles={{

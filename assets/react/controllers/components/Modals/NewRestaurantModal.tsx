@@ -15,6 +15,7 @@ const NewRestaurantModal = ({onClose, open}: RestaurantSuggestionModalProps) => 
                     maxHeight: '90vh',
                     overflowY: 'auto',
                     overflowX: 'hidden',
+                    width: {xs: '95vw', sm: 'auto'},
                 }}
             >
                 <ModalClose/>
@@ -22,8 +23,8 @@ const NewRestaurantModal = ({onClose, open}: RestaurantSuggestionModalProps) => 
                 <Typography level="h4">Nieuw restaurant toevoegen</Typography>
                 <Typography level="body-md" sx={{mb: 1}}>
                     Vul de onderstaande gegevens in om een nieuw restaurant toe te voegen.
-                    <br/>
-                    Hoe meer informatie je geeft hoe beter we het restaurant kunnen toevoegen.
+                    <br/><br/>
+                    Des te meer informatie je toevoegt, des te beter kunnen we het restaurant beoordelen en toevoegen.
                     <br/><br/>
                     We willen je alvast bedanken voor je bijdrage aan deze website!
                 </Typography>

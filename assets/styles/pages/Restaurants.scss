@@ -4,29 +4,66 @@
     &__overlay {
         position: absolute;
         z-index: 1000;
-        background: white;
+        background: #fff;
         padding: 1rem;
         border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, .2);
         width: 350px;
         max-width: 90vw;
-
-        $filter-height: 75px;
 
         &--filters {
             top: 1rem;
             right: 1rem;
-            height: $filter-height;
+            height: auto;
         }
 
         &--info {
-            top: calc(1rem + $filter-height + 1rem + 2rem); // stacked below filter
+            top: calc(1rem + 75px + 1rem + 2rem);
             right: 1rem;
         }
 
+        // desktop
         &--new-restaurant {
             bottom: 3rem;
             left: 1rem;
+        }
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+        --gutter: .5rem;
+        --filters-h: 40px; /* approx height of the Filters button */
+
+        &__overlay {
+            padding: .625rem .75rem;
+            border-radius: 12px;
+
+            /* default: take full width minus gutters */
+            left: var(--gutter);
+            right: var(--gutter);
+            width: auto;
+            max-width: none; /* remove 340px cap */
+
+            &--filters {
+                /* keep the button small */
+                width: auto;
+                left: auto;
+                right: var(--gutter);
+                top: var(--gutter);
+                display: inline-flex;
+            }
+
+            &--info {
+                /* almost full width and a bit lower */
+                top: calc(var(--gutter) + var(--filters-h) + .75rem);
+            }
+
+            &--new-restaurant {
+                /* full-width bar near bottom */
+                left: var(--gutter);
+                right: var(--gutter);
+                bottom: 1rem;
+            }
         }
     }
 }

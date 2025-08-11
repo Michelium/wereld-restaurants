@@ -2,26 +2,31 @@ import React, {useContext, useState} from 'react';
 import {Button, Divider, IconButton, Stack, Typography} from '@mui/joy';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
-import {MapContext, MapStateRepository} from "../../providers/MapContextProvider";
-import {getCountryIconUrl} from "../../utils/getCountryIcon";
-import RestaurantSuggestionModal from "../Modals/RestaurantSuggestionModal";
+import {MapContext, MapStateRepository} from "../../../providers/MapContextProvider";
+import {getCountryIconUrl} from "../../../utils/getCountryIcon";
+import RestaurantSuggestionModal from "../../Modals/RestaurantSuggestionModal";
 
-const RestaurantInfoPanel = () => {
+interface InfoContentProps {
+    onClose?: () => void;
+}
+
+const InfoContent = ({onClose}: InfoContentProps) => {
     const {mapState, setMapState} = useContext(MapContext);
     const [showSuggestionModal, setShowSuggestionModal] = useState(false);
     const restaurant = mapState.activeRestaurant;
-
     if (!restaurant) return null;
 
-    const closePanel = () => {
-        setMapState(MapStateRepository.updaters.clearActiveRestaurant()(mapState));
-    };
+    const googleMapsUrl =
+        restaurant.street && restaurant.houseNumber && restaurant.city
+            ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                `${restaurant.name} ${restaurant.street} ${restaurant.houseNumber}, ${restaurant.postalCode ?? ''} ${restaurant.city}`
+            )}`
+            : null;
 
-    const googleMapsUrl = restaurant.street && restaurant.houseNumber && restaurant.city
-        ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-            `${restaurant.name} ${restaurant.street} ${restaurant.houseNumber}, ${restaurant.postalCode ?? ''} ${restaurant.city}`
-        )}`
-        : null;
+    const closePanel = () => {
+        onClose?.();
+        setMapState(MapStateRepository.updaters.clearActiveRestaurant());
+    };
 
     return (
         <>
@@ -47,13 +52,10 @@ const RestaurantInfoPanel = () => {
                 )}
             </Stack>
 
-
             <Divider sx={{my: 1}}/>
 
-            <Stack spacing={1}>
-                <Typography level="body-sm" textColor="text.secondary">
-                    Adres
-                </Typography>
+            <Stack spacing={1.5}>
+                <Typography level="body-sm" textColor="text.secondary">Adres</Typography>
                 {restaurant.street && restaurant.houseNumber && restaurant.city ? (
                     <Typography>
                         {restaurant.street} {restaurant.houseNumber}<br/>
@@ -74,32 +76,29 @@ const RestaurantInfoPanel = () => {
                         startDecorator={<LocationOnRoundedIcon/>}
                         variant="outlined"
                         size="sm"
-                        sx={{mt: 1, alignSelf: 'flex-start'}}
+                        sx={{
+                            mt: 1,
+                            alignSelf: 'flex-start',
+                        }}
                     >
                         Google Maps
                     </Button>
                 )}
 
-                <Divider sx={{my: 2}}/>
-
                 {restaurant.website && (
                     <>
-                        <Typography level="body-sm" textColor="text.secondary">
-                            Website
-                        </Typography>
-                        <Typography level="body-sm" sx={{alignSelf: 'flex-start'}}>
-                            <a
-                                href={restaurant.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{color: 'inherit', textDecoration: 'underline'}}
-                            >
+                        <Divider sx={{my: 2.5}}/>
+                        <Typography level="body-sm" textColor="text.secondary">Website</Typography>
+                        <Typography level="body-sm">
+                            <a href={restaurant.website} target="_blank" rel="noopener noreferrer"
+                               style={{color: 'inherit', textDecoration: 'underline'}}>
                                 {restaurant.website}
                             </a>
                         </Typography>
-                        <Divider sx={{my: 2}}/>
                     </>
                 )}
+
+                <Divider sx={{my: 1}}/>
 
                 <RestaurantSuggestionModal
                     restaurant={restaurant}
@@ -107,26 +106,15 @@ const RestaurantInfoPanel = () => {
                     onClose={() => setShowSuggestionModal(false)}
                 />
 
-                <Stack direction="row" spacing={1} mt={3}>
-                    <Button
-                        size="sm"
-                        variant="solid"
-                        color="primary"
-                        onClick={() => setShowSuggestionModal(true)}
-                    >
+                <Stack direction="row" spacing={1} mt={4}>
+                    <Button size="sm" variant="solid" onClick={() => setShowSuggestionModal(true)}>
                         Verbetering voorstellen
                     </Button>
-                    <Button
-                        size="sm"
-                        variant="plain"
-                        onClick={closePanel}
-                    >
-                        Sluiten
-                    </Button>
+                    <Button size="sm" variant="plain" onClick={closePanel}>Sluiten</Button>
                 </Stack>
             </Stack>
         </>
     );
 };
 
-export default RestaurantInfoPanel;
+export default InfoContent;
