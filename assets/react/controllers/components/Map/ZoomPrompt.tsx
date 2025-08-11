@@ -8,15 +8,17 @@ const ZoomPrompt = () => {
             color="neutral"
             sx={{
                 position: 'absolute',
-                top: '40px',
-                left: '50%',
-                transform: 'translateX(-50%)',
                 zIndex: 1000,
-                padding: '0.75rem 1.5rem',
-                borderRadius: 'md',
                 boxShadow: 'lg',
-                maxWidth: '90%',
+                borderRadius: 'md',
+                p: '0.75rem 1rem',
                 textAlign: 'center',
+
+                top: { xs: '5rem', md: '1rem' },
+                left: { xs: 8, md: '50%' },
+                right: { xs: 8, md: 'auto' },
+                transform: { xs: 'none', md: 'translateX(-50%)' },
+                maxWidth: { md: '90%' },
             }}
         >
             <Typography level="body-md" fontWeight="lg">
