@@ -23,6 +23,7 @@ const MobileFilterButton = () => {
                 anchor="bottom"
                 open={open}
                 onClose={() => setOpen(false)}
+                disableEnforceFocus
                 slotProps={{
                     content: {
                         sx: {

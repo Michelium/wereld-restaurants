@@ -15,7 +15,7 @@ const RestaurantMap = () => {
             zoom={8}
             minZoom={7}
             maxZoom={16}
-            style={{height: '100vh', width: '100%'}}
+            style={{height: '100%', width: '100%'}}
         >
             <TileLayer
                 attribution="&copy; OpenStreetMap contributors"
