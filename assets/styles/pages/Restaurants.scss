@@ -13,30 +13,27 @@
         max-width: 90vw;
 
         &--filters {
-            top: 1rem;
+            top: calc(1rem + env(safe-area-inset-top));
             right: 1rem;
             height: auto;
         }
 
         &--info {
-            top: calc(1rem + 75px + 1rem + 2rem);
+            top: calc(1rem + 75px + 1rem + 2rem + env(safe-area-inset-top));
             right: 1rem;
         }
 
-        // desktop
         &--new-restaurant {
             bottom: 3rem;
             left: 1rem;
         }
     }
 
-    /* ensure the map fills the viewport and respects safe areas */
+    /* Map should fill viewport; no extra padding that creates a grey bar */
     .restaurants-map {
         position: fixed;
         inset: 0;
         height: 100dvh;
-        padding-top: var(--safe-top);
-        padding-bottom: var(--safe-bottom);
     }
 
     /* MOBILE */
@@ -55,21 +52,20 @@
             max-width: none; /* remove 340px cap */
 
             &--filters {
-                /* keep the button small */
                 width: auto;
                 left: auto;
                 right: var(--gutter);
-                top: var(--gutter);
+                top: calc(var(--gutter) + env(safe-area-inset-top));
                 display: inline-flex;
             }
 
             &--info {
-                /* almost full width and a bit lower */
-                top: calc(var(--gutter) + var(--filters-h) + .75rem);
+                top: calc(
+                    var(--gutter) + var(--filters-h) + .75rem + env(safe-area-inset-top)
+                );
             }
 
             &--new-restaurant {
-                /* full-width bar near bottom */
                 left: var(--gutter);
                 right: var(--gutter);
                 bottom: 1rem;
