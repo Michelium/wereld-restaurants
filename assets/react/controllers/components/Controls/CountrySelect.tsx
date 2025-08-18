@@ -40,6 +40,7 @@ const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select 
             menuPortalTarget={document.body}
             closeMenuOnScroll={false}
             menuShouldBlockScroll
+            autoFocus={false}
             menuPosition="fixed"
             isDisabled={disabled}
             id={id}
