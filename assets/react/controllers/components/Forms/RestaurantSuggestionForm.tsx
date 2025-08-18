@@ -186,6 +186,7 @@ const RestaurantSuggestionForm = ({restaurant, onClose}: RestaurantSuggestionFor
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                 />
+                <Typography level="body-xs">Deze opmerking wordt toegevoegd aan de suggestie en kan door beheerders worden bekeken, maar is niet zichtbaar voor andere gebruikers.</Typography>
             </Stack>
 
             <Input
