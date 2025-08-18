@@ -1,5 +1,6 @@
 .restaurants-map-wrapper {
     position: relative;
+    min-height: 100dvh;
 
     &__overlay {
         position: absolute;
@@ -27,6 +28,15 @@
             bottom: 3rem;
             left: 1rem;
         }
+    }
+
+    /* ensure the map fills the viewport and respects safe areas */
+    .restaurants-map {
+        position: fixed;
+        inset: 0;
+        height: 100dvh;
+        padding-top: var(--safe-top);
+        padding-bottom: var(--safe-bottom);
     }
 
     /* MOBILE */
@@ -66,4 +76,20 @@
             }
         }
     }
+
+    /* Fallbacks for older Safari, if anyone still uses that */
+    @supports not (height: 100dvh) {
+        .restaurants-map { height: 100vh; }
+    }
+    @supports (-webkit-touch-callout: none) {
+        .restaurants-map { height: -webkit-fill-available; }
+    }
+}
+
+/* keep Leaflet controls clear of notch/gesture areas */
+.leaflet-control-container .leaflet-top {
+    margin-top: calc(10px + env(safe-area-inset-top));
+}
+.leaflet-control-container .leaflet-bottom {
+    margin-bottom: calc(10px + env(safe-area-inset-bottom));
 }
