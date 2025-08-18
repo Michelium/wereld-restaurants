@@ -61,6 +61,10 @@ const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select 
                     alignItems: 'center',
                     gap: '6px',
                 }),
+                menuList: (base) => ({
+                    ...base,
+                    maxHeight: '185px',
+                }),
             }}
             formatOptionLabel={(country, { context }) => {
                 // Rendering options in the dropdown menu
