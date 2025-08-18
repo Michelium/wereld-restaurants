@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, Divider, Modal, ModalClose, ModalDialog, Stack, Typography} from '@mui/joy';
 import {RestaurantType} from "../../types/RestaurantType";
 import toast from "react-hot-toast";
@@ -14,6 +14,8 @@ type SuggestionType = 'form' | 'closed';
 
 const RestaurantSuggestionModal = ({restaurant, onClose, open}: RestaurantSuggestionModalProps) => {
     const [step, setStep] = useState<null | SuggestionType>(null);
+
+    const dialogRef = useRef<HTMLDivElement | null>(null);
 
     const handleSimpleSubmit = async (type: SuggestionType) => {
         try {
@@ -49,11 +51,20 @@ const RestaurantSuggestionModal = ({restaurant, onClose, open}: RestaurantSugges
     return (
         <Modal open={open} onClose={onClose}>
             <ModalDialog
+                ref={dialogRef}
                 sx={{
-                    maxHeight: '90vh',
+                    maxWidth: 'min(640px, 92vw)',
+                    mt: 'max(16px, calc(env(safe-area-inset-top) + 8px))',
+                    mb: 'max(16px, calc(env(safe-area-inset-bottom) + 8px))',
+                    maxHeight:
+                        'calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 32px)',
                     overflowY: 'auto',
                     overflowX: 'hidden',
                     width: {xs: '95vw', sm: 'auto'},
+                    boxSizing: 'border-box',
+                    borderRadius: 12,
+                    px: 2,
+                    py: 1.5,
                 }}
             >
                 <ModalClose/>
