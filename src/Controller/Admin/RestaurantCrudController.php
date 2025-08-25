@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -113,6 +114,17 @@ class RestaurantCrudController extends AbstractCrudController {
                 RestaurantStatus::OPEN->value => 'success',
                 RestaurantStatus::CLOSED->value => 'secondary',
             ]);
+
+        if ($pageName === Crud::PAGE_INDEX) {
+            yield DateField::new('createdAt')
+                ->setLabel('Aangemaakt op')
+                ->setFormat('dd-MM-yyyy HH:mm')
+                ->setSortable(false);
+            yield DateField::new('updatedAt')
+                ->setLabel('Laatst bewerkt op')
+                ->setFormat('dd-MM-yyyy HH:mm')
+                ->setSortable(false);
+        }
 
         $locationFieldSet = FormField::addFieldset('Locatie');
         if ($pageName === Crud::PAGE_NEW) {

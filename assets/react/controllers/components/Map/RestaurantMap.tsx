@@ -14,7 +14,7 @@ const RestaurantMap = () => {
             center={[52.1, 5.1]}
             zoom={8}
             minZoom={7}
-            maxZoom={16}
+            maxZoom={18}
             style={{height: '100%', width: '100%'}}
         >
             <TileLayer

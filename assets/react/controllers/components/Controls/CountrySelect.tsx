@@ -40,6 +40,7 @@ const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select 
             menuPortalTarget={document.body}
             closeMenuOnScroll={false}
             menuShouldBlockScroll
+            autoFocus={false}
             menuPosition="fixed"
             isDisabled={disabled}
             id={id}
@@ -59,6 +60,10 @@ const CountrySelect = ({isMulti = false, value, onChange, placeholder = 'Select 
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
+                }),
+                menuList: (base) => ({
+                    ...base,
+                    maxHeight: '185px',
                 }),
             }}
             formatOptionLabel={(country, { context }) => {

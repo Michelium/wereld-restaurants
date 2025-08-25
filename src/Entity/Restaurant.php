@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Trait\EntityLifecycleTrait;
+use App\Enum\RestaurantFieldSource;
 use App\Enum\RestaurantStatus;
 use App\Repository\RestaurantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -72,6 +73,9 @@ class Restaurant {
 
     #[ORM\Column(type: 'string', enumType: RestaurantStatus::class, options: ['default' => RestaurantStatus::OPEN->value])]
     private RestaurantStatus $status = RestaurantStatus::OPEN;
+
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
+    private array $fieldSources = []; // e.g. ['name'=>['source'=>'user','at'=>'{datetime}}']]
 
     public function __construct() {
         $this->restaurantSuggestions = new ArrayCollection();
@@ -229,6 +233,34 @@ class Restaurant {
     public function setStatus(RestaurantStatus $status): Restaurant {
         $this->status = $status;
         return $this;
+    }
+
+    public function getFieldSources(): array {
+        return $this->fieldSources;
+    }
+
+    public function setFieldSources(array $fields, \DateTimeInterface $at, RestaurantFieldSource $source): static {
+        foreach ($fields as $field) {
+            $this->setFieldSource($field, $at, $source);
+        }
+
+        return $this;
+    }
+
+    public function getFieldSource(string $field): ?string {
+        return $this->fieldSources[$field]['source'] ?? null;
+    }
+
+    public function setFieldSource(string $field, \DateTimeInterface $at, RestaurantFieldSource $source): static {
+        $this->fieldSources[$field] = ['source' => $source->value, 'at' => $at->format('c')];
+
+        return $this;
+    }
+
+    public function setFieldSourcesFromChangeSet(array $changeSet, \DateTimeInterface $at, RestaurantFieldSource $source): void {
+        foreach ($changeSet as $field => [$old, $new]) {
+            $this->setFieldSource($field, $at, $source);
+        }
     }
 
 }

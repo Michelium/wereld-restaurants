@@ -5,6 +5,7 @@ namespace App\Service;
 use App\DTO\RestaurantSuggestionDTO;
 use App\Entity\Restaurant;
 use App\Entity\RestaurantSuggestion;
+use App\Enum\RestaurantFieldSource;
 use App\Enum\RestaurantStatus;
 use App\Enum\RestaurantSuggestionStatus;
 use App\Enum\RestaurantSuggestionType;
@@ -23,7 +24,7 @@ readonly final class RestaurantSuggestionService {
 
     public function approveSuggestion(RestaurantSuggestion $restaurantSuggestion): void {
         if ($restaurantSuggestion->getType() === RestaurantSuggestionType::NEW) {
-            // If the restaurant doesn't exist, we don't create a restaurant, this is done after the suggestion is approved by the user.
+            // If the restaurant doesn't exist, we don't create a restaurant, this is done after the suggestion is approved by the admin.
             $restaurantSuggestion->setStatus(RestaurantSuggestionStatus::APPROVED);
             $this->entityManager->persist($restaurantSuggestion);
             $this->entityManager->flush();
@@ -34,22 +35,55 @@ readonly final class RestaurantSuggestionService {
             ? new Restaurant()
             : $restaurantSuggestion->getRestaurant();
 
+        if (!$restaurant) {
+            throw new \InvalidArgumentException('Restaurant not found for suggestion.');
+        }
+
+        $fields = $restaurantSuggestion->getFields();
+        $changed = [];
+
         switch ($restaurantSuggestion->getType()) {
             case RestaurantSuggestionType::FIELDS:
-                $restaurant->setName($restaurantSuggestion->getFields()['name'] ?? $restaurant->getName());
-                $restaurant->setStreet($restaurantSuggestion->getFields()['street'] ?? $restaurant->getStreet());
-                $restaurant->setHouseNumber($restaurantSuggestion->getFields()['houseNumber'] ?? $restaurant->getHouseNumber());
-                $restaurant->setPostalCode($restaurantSuggestion->getFields()['postalCode'] ?? $restaurant->getPostalCode());
-                $restaurant->setCity($restaurantSuggestion->getFields()['city'] ?? $restaurant->getCity());
-                $restaurant->setWebsite($restaurantSuggestion->getFields()['website'] ?? $restaurant->getWebsite());
-                $restaurant->setCountry($restaurantSuggestion->getFields()['countryId'] ? $this->countryRepository->find($restaurantSuggestion->getFields()['countryId']) : null);
+                $this->applyIfChanged($restaurant, 'name', $fields['name'] ?? null, $changed);
+                $this->applyIfChanged($restaurant, 'street', $fields['street'] ?? null, $changed);
+                $this->applyIfChanged($restaurant, 'houseNumber', $fields['houseNumber'] ?? null, $changed);
+                $this->applyIfChanged($restaurant, 'postalCode', $fields['postalCode'] ?? null, $changed);
+                $this->applyIfChanged($restaurant, 'city', $fields['city'] ?? null, $changed);
+                $this->applyIfChanged($restaurant, 'website', $fields['website'] ?? null, $changed);
+
+                // association: country
+                if (array_key_exists('countryId', $fields)) {
+                    $newCountry = $fields['countryId'] ? $this->countryRepository->find($fields['countryId']) : null;
+                    $currentCountry = $restaurant->getCountry();
+                    if (($currentCountry?->getId()) !== ($newCountry?->getId())) {
+                        $restaurant->setCountry($newCountry);
+                        $changed[] = 'country';
+                    }
+                }
 
                 break;
             case RestaurantSuggestionType::CLOSED:
-                $restaurant->setStatus(RestaurantStatus::CLOSED);
+                if ($restaurant->getStatus() !== RestaurantStatus::CLOSED) {
+                    $restaurant->setStatus(RestaurantStatus::CLOSED);
+                    $changed[] = 'status';
+                }
                 break;
             default:
                 throw new \InvalidArgumentException('Unsupported suggestion type.');
+        }
+
+        // If this suggestion created a new Restaurant instance here, then all provided fields are considered user-sourced.
+        // Otherwise, only mark *changed* fields as user-sourced.
+        if (method_exists($restaurant, 'markFields')) {
+            $now = new \DateTimeImmutable();
+            if ($restaurantSuggestion->isNewRestaurant()) {
+                $toMark = ['name', 'street', 'houseNumber', 'postalCode', 'city', 'website', 'country'];
+                $restaurant->setFieldSources($toMark, $now, RestaurantFieldSource::USER);
+            } else {
+                if ($changed !== []) {
+                    $restaurant->setFieldSources($changed, $now, RestaurantFieldSource::USER);
+                }
+            }
         }
 
         $this->entityManager->persist($restaurant);
@@ -111,5 +145,37 @@ readonly final class RestaurantSuggestionService {
         }
         return null;
 
+    }
+
+    /**
+     * Apply the new value to the entity if it has changed, and record the field name in the changed array.
+     *
+     * If $new !== current, set it and add $field to $changed.
+     */
+    private function applyIfChanged(Restaurant $restaurant, string $field, mixed $new, array &$changed): void {
+        $getter = 'get' . ucfirst($field);
+        $setter = 'set' . ucfirst($field);
+        if (!method_exists($restaurant, $getter) || !method_exists($restaurant, $setter)) {
+            return;
+        }
+
+        $current = $restaurant->$getter();
+
+        // normalise strings to avoid marking "same but with spaces" as a change
+        if (is_string($current) || is_string($new)) {
+            $current = $this->normaliseString($current);
+            $new = $this->normaliseString($new);
+        }
+
+        if ($current !== $new) {
+            $restaurant->$setter($new);
+            $changed[] = $field;
+        }
+    }
+
+    private function normaliseString(?string $value): ?string {
+        if ($value === null) return null;
+        $value = trim($value);
+        return $value === '' ? null : $value;
     }
 }
