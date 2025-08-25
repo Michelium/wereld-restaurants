@@ -9,6 +9,7 @@
 ###< symfony/framework-bundle ###
 .idea
 data
+export.geojson
 
 ###> pentatrion/vite-bundle ###
 /node_modules/
