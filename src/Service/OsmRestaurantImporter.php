@@ -53,6 +53,14 @@ OVERPASS;
     }
 
 
+    /**
+     * The .geojson file can be downloaded from:
+     * https://overpass-turbo.eu/
+     *
+     * Use the same query as in importFromOverpass()
+     * @param string $path
+     * @return array
+     */
     public function importFromFile(string $path): array {
         $json = file_get_contents($path);
         $data = json_decode($json, true);

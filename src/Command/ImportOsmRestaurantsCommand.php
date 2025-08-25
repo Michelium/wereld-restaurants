@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:import-osm-restaurants',
-    description: 'Import restaurants from an OSM GeoJSON file',
+    description: 'Import restaurants from an OSM GeoJSON file or from the Overpass API',
 )]
 class ImportOsmRestaurantsCommand extends Command {
 
